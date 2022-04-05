@@ -16,10 +16,6 @@
       "homepage": "https://kelcak.com"
     }
   ],
-  "support": {
-    "issues": "https://github.com/RobiNN1/Docs/issues",
-    "source": "https://github.com/RobiNN1/Docs"
-  },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
