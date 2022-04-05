@@ -1,0 +1,61 @@
+<!-- Docs system https://github.com/RobiNN1/Docs -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block page_title %}{% endblock %}{{ config('site_title') }}</title>
+    {% if block('description') is defined %}
+        <meta name="description" content="{% block description %}{{ config('site_description') }}{% endblock %}">
+    {% endif %}
+    <meta name="keywords" content="{{ config('keywords') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ path('assets/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ path('assets/css/styles.css') }}" rel="stylesheet">
+    {% block head_content %}{% endblock %}
+</head>
+<body>
+{% block header %}
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="{{ config('site_url') }}">{{ config('logo')|replace({'{site_title}': config('site_title')})|raw }}</a>
+                <button class="navbar-toggler py-0 px-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu">{{ svg('menu', 30) }}</button>
+                <div class="collapse navbar-collapse" id="mainmenu">
+                    {% if config('nav_links') %}
+                        <ul class="navbar-nav me-auto">
+                            {% for item in config('nav_links') %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ item.link|replace({'{site_url}': config('site_url')}) }}">{{ item.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item ms-md-2 dropdown searchinput">
+                        <input id="searchdocs" class="form-control dropdown-toggle" type="text" placeholder="Search docs.." data-bs-toggle="dropdown" aria-label="Search docs..">
+                        <ul class="dropdown-menu mt-1 scrollable w-100" aria-labelledby="searchdocs" id="search_result">
+                            <li><span class="dropdown-item" title="Enter a search term to find results.">Enter a search term to find results.</span></li>
+                        </ul>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+{% endblock %}
+
+<div class="container" id="{% block container_id %}page{% endblock %}">
+    {% block body %}{% endblock %}
+</div>
+
+{% block footer %}
+    <footer class="sitefooter">
+        {% block footer_content %}{% endblock %}
+        <div class="container pt-4 pb-4 text-center">Copyright &copy; {{ 'now' | date('Y') }} All Rights Reserved.</div>
+    </footer>
+{% endblock %}
+<script>let SITEURL = '{{ config('site_url') }}';</script>
+<script src="{{ path('assets/bootstrap/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ path('assets/js/scripts.js') }}"></script>
+</body>
+</html>

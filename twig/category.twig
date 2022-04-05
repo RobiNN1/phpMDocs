@@ -1,0 +1,26 @@
+{% extends 'layout.twig' %}
+
+{% block page_title %}{{ title }} | {% endblock %}
+{% block description %}{{ description }}{% endblock %}
+{% block container_id %}category{% endblock %}
+
+{% block body %}
+    {{ content|raw }}
+
+    {% if columns %}
+        <hr>
+        <div class="row mt-4">
+            {% for column in columns %}
+                <div class="col-12 col-md-4">
+                    <ul class="list-unstyled">
+                        {% for page in column %}
+                            <li>
+                                <a href="{{ page.url }}">{{ page.title }}{% if page.is_dir %} {{ svg('folder', 14) }}{% endif %}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

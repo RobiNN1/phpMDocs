@@ -1,0 +1,56 @@
+{% extends 'layout.twig' %}
+
+{% block page_title %}{{ title }} | {% endblock %}
+{% block description %}{{ description }}{% endblock %}
+{% block container_id %}page{% endblock %}
+{% block head_content %}
+    <link href="{{ path('assets/highlight.js/default.min.css') }}" rel="stylesheet">
+    <script src="{{ path('assets/highlight.js/highlight.min.js') }}"></script>
+    <script>hljs.highlightAll();</script>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        {% if all_pages %}
+            <div class="col-12 col-lg-2">
+                <nav class="navbar-expand-lg d-block sticky docs-all-pages rounded-1 mt-3 mt-md-0">
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#allpages" class="d-lg-none align-middle">{{ svg('menu', 20) }}</a>
+                    <span class="d-lg-none">Show pages</span>
+                    <div class="collapse navbar-collapse mt-md-3" id="allpages">
+                        <ul class="list-unstyled mb-0 overflow-hidden">
+                            {% for link in all_pages %}
+                                <li class="nav-item">
+                                    <a class="nav-link p-0 text-truncate{{ is_active('/' ~ link.path) ? ' text-dark' : '' }}" href="{{ link.url }}">
+                                        {{ link.title|raw }}
+                                        {% if link.is_dir %}{{ svg('folder', 14) }}{% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        {% endif %}
+
+        <div class="col-12 col-lg-{{ all_pages ? 8 : 9 }}">
+            <div class="mt-3">{{ content|raw }}</div>
+        </div>
+
+        {% if links %}
+            <div class="col-12 col-lg-{{ all_pages ? 2 : 3 }}">
+                <div class="sticky mt-3 mt-md-0">
+                    <nav id="contents" class="nav flex-column d-block docs-contents rounded-1 mt-md-3">
+                        <div class="title mb-0">Table of contents</div>
+                        <ul class="list-unstyled mb-0">
+                            {% for link in links %}
+                                <li class="nav-item">
+                                    <a class="nav-link p-0 text-truncate" href="#{{ link.id }}">{{ link.title|raw }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

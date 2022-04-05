@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file is part of Docs.
+ *
+ * Copyright (c) Róbert Kelčák (https://kelcak.com/)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+use RobiNN\Docs\Functions;
+use samdark\sitemap\Sitemap;
+
+$sitemap = new Sitemap(__DIR__.'/../sitemap.xml');
+
+$sitemap->addItem(Functions::config('site_url'), time(), Sitemap::MONTHLY, '1.0');
+
+if (is_dir(Functions::config('docs_path'))) {
+    $dirs = Functions::scanDir(Functions::config('docs_path'));
+
+    foreach ($dirs as $file) {
+        $sitemap->addItem(Functions::config('site_url').$file, time(), Sitemap::WEEKLY);
+    }
+}
+
+$sitemap->write();
+
+$robots_content = 'User-agent: *
+Disallow: /assets/
+Disallow: /cache/
+Disallow: /docs/
+Disallow: /src/
+Disallow: /twig/
+Disallow: /vendor/
+
+Sitemap: '.Functions::config('site_url').'/sitemap.xml
+';
+file_put_contents(__DIR__.'/../robots.txt', $robots_content);
+
+echo 'Sitemap successfully generated.';
+exit(0);

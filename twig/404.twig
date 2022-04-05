@@ -1,0 +1,15 @@
+{% extends 'layout.twig' %}
+
+{% block page_title %}Not Found | {% endblock %}
+{% block container_id %}notfound{% endblock %}
+
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block body %}
+    <div class="text-center">
+        <h1>404</h1>
+        <h2>The page you are looking for was not found.</h2>
+        <a href="{{ config('site_url') }}">Back to Home</a>
+    </div>
+{% endblock %}
