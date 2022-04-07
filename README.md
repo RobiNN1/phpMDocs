@@ -5,7 +5,7 @@ Simple but powerful Markdown docs.
 ## Features
 
 - Search within Markdown files
-- Customizable Twig templates
+- Customizable Twig templates (Note: default design is just plain Bootstrap)
 - Automatically generated ToC and list of pages under category
 - Cache for faster loading
 - Sitemap and robots.txt generator - run to generate `composer sitemap`
