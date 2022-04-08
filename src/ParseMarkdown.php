@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace RobiNN\Docs;
 
 class ParseMarkdown {
@@ -24,15 +26,15 @@ class ParseMarkdown {
     public function __construct(?string $text = null) {
         $this->parsedown = new ParsedownExt();
 
-        $this->text = is_file(Functions::getFile($text)) ? file_get_contents(Functions::getFile($text)) : $text;
+        $this->text = is_file($this->getFile($text)) ? file_get_contents($this->getFile($text)) : $text;
     }
 
     /**
      * Parse content
      *
-     * @return array|string|null
+     * @return string
      */
-    public function parse(): array|string|null {
+    public function parse(): string {
         return $this->parsedown->text($this->text);
     }
 
@@ -79,5 +81,17 @@ class ParseMarkdown {
      */
     public function getHeadings(): array {
         return $this->parsedown->headings;
+    }
+
+    /**
+     * Get file
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function getFile(string $path): string {
+        $path = Functions::config('docs_path').trim($path, '/');
+        return is_file($path.'.md') ? $path.'.md' : $path.'/README.md';
     }
 }

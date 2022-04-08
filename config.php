@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 return [
     'site_title'       => 'Documentation', // Displayed on homepage and meta tag
     'site_description' => '',
@@ -15,8 +17,8 @@ return [
     'site_url'         => sprintf('http%s://%s', ((
         isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === 1) ||
         isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
-    ) ? 's' : ''), $_SERVER['SERVER_NAME']),
-    //'site_url'         => 'http://docs.host',
+    ) ? 's' : ''), $_SERVER['SERVER_NAME']), // If that doesn't work, it may be replaced with the actual URL
+    'site_url_sitemap' => 'http://docs.host', // For sitemap generator
     'keywords'         => 'docs,php',
     'docs_path'        => __DIR__.'/docs/', // Path to dir with documentation
     'ignore_files'     => [

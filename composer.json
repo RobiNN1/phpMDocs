@@ -24,11 +24,11 @@
     "ext-json": "*",
     "erusev/parsedown": "^1.7",
     "robinn/cache": "^1.0",
+    "samdark/sitemap": "^2.4",
     "twig/twig": "^3.3"
   },
   "require-dev": {
-    "phpstan/phpstan": "^1.5",
-    "samdark/sitemap": "^2.4"
+    "phpstan/phpstan": "^1.5"
   },
   "autoload": {
     "psr-4": {
