@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace RobiNN\Docs;
 
 use DirectoryIterator;
@@ -130,18 +132,6 @@ class Functions {
         $dirs = array_values($dirs);
 
         return $remove_md_ext ? array_map(fn($name) => strtr($name, ['.md' => '']), $dirs) : $dirs;
-    }
-
-    /**
-     * Get file
-     *
-     * @param string $path
-     *
-     * @return string
-     */
-    public static function getFile(string $path): string {
-        $path = self::config('docs_path').trim($path, '/');
-        return is_file($path.'.md') ? $path.'.md' : $path.'/README.md';
     }
 
     /**

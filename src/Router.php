@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace RobiNN\Docs;
 
 /**
@@ -81,16 +83,6 @@ class Router {
      */
     public function get(string $pattern, callable|array $fn): void {
         $this->match('GET', $pattern, $fn);
-    }
-
-    /**
-     * Shorthand for a route accessed using OPTIONS.
-     *
-     * @param string         $pattern A route pattern such as /about/system
-     * @param callable|array $fn      The handling function to be executed
-     */
-    public function options(string $pattern, callable|array $fn): void {
-        $this->match('OPTIONS', $pattern, $fn);
     }
 
     /**
