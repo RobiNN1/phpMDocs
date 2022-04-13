@@ -10,7 +10,6 @@
     <meta name="keywords" content="{{ config('keywords') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{{ path('assets/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ path('assets/css/styles.css') }}" rel="stylesheet">
     {% block head_content %}{% endblock %}
 </head>
 <body>
@@ -19,13 +18,18 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="{{ config('site_url') }}">{{ config('logo')|replace({'{site_title}': config('site_title')})|raw }}</a>
-                <button class="navbar-toggler py-0 px-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu">{{ svg('menu', 30) }}</button>
+                <button class="navbar-toggler py-0 px-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainmenu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi" style="vertical-align: -.125em;" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
+                    </svg>
+                </button>
                 <div class="collapse navbar-collapse" id="mainmenu">
                     {% if config('nav_links') %}
                         <ul class="navbar-nav me-auto">
                             {% for item in config('nav_links') %}
+                                {% set link = item.link|replace({'{site_url}': config('site_url')}) %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ item.link|replace({'{site_url}': config('site_url')}) }}">{{ item.title }}</a>
+                                    <a class="nav-link{{ is_active(link, true) ? ' active' : '' }}" href="{{ link }}">{{ item.title }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -33,7 +37,7 @@
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item ms-md-2 dropdown searchinput">
                         <input id="searchdocs" class="form-control dropdown-toggle" type="text" placeholder="Search docs.." data-bs-toggle="dropdown" aria-label="Search docs..">
-                        <ul class="dropdown-menu mt-1 scrollable w-100" aria-labelledby="searchdocs" id="search_result">
+                        <ul class="dropdown-menu mt-1 w-100 h-auto" style="max-height: 18.75rem;overflow-x: hidden;" aria-labelledby="searchdocs" id="search_result">
                             <li><span class="dropdown-item" title="Enter a search term to find results.">Enter a search term to find results.</span></li>
                         </ul>
                     </li>

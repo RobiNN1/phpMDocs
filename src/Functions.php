@@ -54,12 +54,11 @@ class Functions {
 
             $twig->addFunction(new TwigFunction('config', [$this, 'config']));
             $twig->addFunction(new TwigFunction('path', [$this, 'path']));
-            $twig->addFunction(new TwigFunction('svg', [$this, 'svg'], ['is_safe' => ['html']]));
             $twig->addFunction(new TwigFunction('is_active', [$this, 'isActive']));
 
             return $twig->render($tpl, $data);
         } catch (Exception $e) {
-            return $e->getMessage().' File: '.$e->getFile().' Line: '.$e->getLine();
+            return $e->getMessage().' in '.$e->getFile().' at line: '.$e->getLine();
         }
     }
 
@@ -171,27 +170,6 @@ class Functions {
         usort($pages, fn($a, $b) => strcmp($a['id'], $b['id']));
 
         return $this->cacheData('get_pages'.$path, $pages);
-    }
-
-    /**
-     * Get svg icon from file
-     *
-     * @param string $icon
-     * @param int    $size
-     * @param string $class
-     *
-     * @return ?string
-     */
-    public static function svg(string $icon, int $size = 16, string $class = ''): ?string {
-        $file = __DIR__.'/../assets/icons/'.$icon.'.svg';
-
-        if (is_file($file)) {
-            $content = trim(file_get_contents($file));
-            $attributes = 'width="'.$size.'" height="'.$size.'" fill="currentColor" class="bi'.(!empty($class) ? ' '.$class : '').'" viewBox="0 0 16 16"';
-            return preg_replace('~<svg([^<>]*)>~', '<svg xmlns="http://www.w3.org/2000/svg" '.$attributes.'>', $content);
-        }
-
-        return null;
     }
 
     /**
