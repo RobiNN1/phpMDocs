@@ -30,7 +30,6 @@ return [
         ['link' => '{site_url}', 'title' => 'Home'],
         //['link' => '/page', 'title' => 'Page Title'],
     ],
-    //'github_link'      => 'https://github.com/Org/Repo', // Uncomment to enable
     'twig_debug'       => true,
     'cache'            => [
         'enable'     => false, // Enable / Disable cache
