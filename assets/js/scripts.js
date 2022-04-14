@@ -30,7 +30,7 @@ if (search_field) {
                             }
                         });
                     } else {
-                        result = `<li><span class="dropdown-item">${resp.status}</span></li>`;
+                        result = `<li><span class="dropdown-header fw-bold text-truncate">${resp.status}</span></li>`;
                     }
 
                     search_result.innerHTML = result;
