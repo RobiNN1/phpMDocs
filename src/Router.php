@@ -49,11 +49,11 @@ class Router {
     /**
      * Store a route and a handling function to be executed when accessed using one of the specified methods.
      *
-     * @param string         $methods Allowed methods, | delimited
-     * @param string         $pattern A route pattern such as /about/system
-     * @param callable|array $fn      The handling function to be executed
+     * @param string $methods Allowed methods, | delimited
+     * @param string $pattern A route pattern such as /about/system
+     * @param mixed  $fn      The handling function to be executed
      */
-    public function match(string $methods, string $pattern, callable|array $fn): void {
+    public function match(string $methods, string $pattern, mixed $fn): void {
         $pattern = $this->baseRoute.'/'.trim($pattern, '/');
         $pattern = $this->baseRoute ? rtrim($pattern, '/') : $pattern;
 
@@ -68,20 +68,20 @@ class Router {
     /**
      * Shorthand for a route accessed using any method.
      *
-     * @param string         $pattern A route pattern such as /about/system
-     * @param callable|array $fn      The handling function to be executed
+     * @param string $pattern A route pattern such as /about/system
+     * @param mixed  $fn      The handling function to be executed
      */
-    public function all(string $pattern, callable|array $fn): void {
+    public function all(string $pattern, mixed $fn): void {
         $this->match('GET|POST|PUT|DELETE|OPTIONS|PATCH|HEAD', $pattern, $fn);
     }
 
     /**
      * Shorthand for a route accessed using GET.
      *
-     * @param string         $pattern A route pattern such as /about/system
-     * @param callable|array $fn      The handling function to be executed
+     * @param string $pattern A route pattern such as /about/system
+     * @param mixed  $fn      The handling function to be executed
      */
-    public function get(string $pattern, callable|array $fn): void {
+    public function get(string $pattern, mixed $fn): void {
         $this->match('GET', $pattern, $fn);
     }
 
@@ -180,9 +180,9 @@ class Router {
     /**
      * Set the 404 handling function.
      *
-     * @param callable|array $fn The function to be executed
+     * @param mixed $fn The function to be executed
      */
-    public function set404(callable|array $fn): void {
+    public function set404(mixed $fn): void {
         $this->notFoundCallback = $fn;
     }
 
@@ -273,12 +273,16 @@ class Router {
     }
 
     /**
-     * @param callable|array $fn
-     * @param array          $params
+     * @param mixed $fn
+     * @param array $params
      *
      * @return void
      */
-    private function invoke(callable|array $fn, array $params = []): void {
+    private function invoke(mixed $fn, array $params = []): void {
+        if (is_string($fn) && method_exists($fn, 'show')) {
+            $fn = [new $fn(), 'show'];
+        }
+
         if (is_callable($fn)) {
             call_user_func_array($fn, $params);
         } else {

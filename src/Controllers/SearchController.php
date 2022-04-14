@@ -24,9 +24,7 @@ class SearchController extends Functions {
         $search_page = filter_input(INPUT_GET, 'page');
 
         if (!empty($search_page)) {
-            $pages = $this->allPages();
-
-            foreach ($pages as $doc) {
+            foreach ($this->allPages() as $doc) {
                 foreach ($doc['pages'] as $page) {
                     foreach (explode(' ', $search_page) as $word) {
                         if (stripos($page['title'], $word) !== false) {
@@ -41,7 +39,9 @@ class SearchController extends Functions {
             }
         }
 
-        usort($results, fn($a, $b) => strcmp($a['title'], $b['title']));
+        // Remove duplicates
+        $temp_arr = array_unique(array_column($results, 'link'));
+        $results = array_values(array_intersect_key($results, $temp_arr));
 
         if (empty($results)) {
             $results['status'] = 'We didn\'t find any results!';

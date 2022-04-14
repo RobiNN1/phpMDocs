@@ -23,8 +23,8 @@
                     <div class="collapse navbar-collapse mt-md-3" id="allpages">
                         <ul class="list-unstyled mb-0 overflow-hidden">
                             {% for link in all_pages %}
-                                <li class="nav-item">
-                                    <a class="nav-link p-0 text-truncate{{ is_active('/' ~ link.path) ? ' text-dark' : '' }}" href="{{ link.url }}">
+                                <li class="py-1 text-truncate">
+                                    <a{{ is_active('/' ~ link.path) ? ' class="text-dark"' : '' }} href="{{ link.url }}">
                                         {{ link.title|raw }}
                                         {% if link.is_dir %}
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi" style="vertical-align: -.125em;" viewBox="0 0 16 16">
@@ -46,13 +46,13 @@
 
         {% if links %}
             <div class="col-12 col-lg-{{ all_pages ? 2 : 3 }}">
-                <div class="sticky-top mt-3 mt-md-0">
-                    <nav id="contents" class="nav flex-column d-block docs-contents rounded-1 mt-md-3">
+                <div class="sticky-top mt-3 mt-md-0" style="z-index: inherit;">
+                    <nav class="toc rounded-1 mt-md-3">
                         <div class="title mb-0">Table of contents</div>
                         <ul class="list-unstyled mb-0">
                             {% for link in links %}
-                                <li class="nav-item">
-                                    <a class="nav-link p-0 text-truncate" href="#{{ link.id }}">{{ link.title|raw }}</a>
+                                <li class="text-truncate">
+                                    <a class="px-0 py-1 nav-link" href="#{{ link.id }}">{{ link.title|raw }}</a>
                                 </li>
                             {% endfor %}
                         </ul>

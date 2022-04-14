@@ -26,7 +26,7 @@ if (is_dir(Functions::config('docs_path'))) {
     $dirs = Functions::scanDir(Functions::config('docs_path'));
 
     foreach ($dirs as $file) {
-        $sitemap->addItem(Functions::config('site_url_sitemap').$file, time(), Sitemap::WEEKLY);
+        $sitemap->addItem(Functions::config('site_url_sitemap').'/'.$file, time(), Sitemap::WEEKLY);
     }
 }
 
