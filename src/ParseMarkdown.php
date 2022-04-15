@@ -58,7 +58,8 @@ class ParseMarkdown {
      * @return string
      */
     public function getDescription(): string {
-        $description = '';
+        $description = strip_tags(Functions::config('site_description'));
+
         $data = explode("\n", (string)$this->text);
 
         if (!empty($data[2])) {
