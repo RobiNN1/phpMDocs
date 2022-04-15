@@ -24,16 +24,14 @@ class SearchController extends Functions {
         $search_page = filter_input(INPUT_GET, 'page');
 
         if (!empty($search_page)) {
-            foreach ($this->allPages() as $doc) {
-                foreach ($doc['pages'] as $page) {
-                    foreach (explode(' ', $search_page) as $word) {
-                        if (stripos($page['title'], $word) !== false) {
-                            $results[] = [
-                                'page'  => $doc['page'],
-                                'title' => $page['title'],
-                                'link'  => $page['link'],
-                            ];
-                        }
+            foreach ($this->allPages() as $page) {
+                foreach (explode(' ', $search_page) as $word) {
+                    if (stripos($page['title'], $word) !== false) {
+                        $results[] = [
+                            'page'  => $page['page'],
+                            'title' => $page['title'],
+                            'link'  => $page['link'],
+                        ];
                     }
                 }
             }
@@ -55,7 +53,7 @@ class SearchController extends Functions {
      * @return array
      */
     private function allPages(): array {
-        $results = [];
+        $pages = [];
 
         if (is_dir($this->config('docs_path'))) {
             $dirs = $this->scanDir($this->config('docs_path'));
@@ -66,8 +64,8 @@ class SearchController extends Functions {
                 $page_title = $md->getTitle();
                 $headings = $md->getHeadings();
 
-                $pages = [];
                 $pages[] = [
+                    'page'  => $page_title,
                     'title' => $page_title,
                     'link'  => $this->config('site_url').$file,
                 ];
@@ -75,19 +73,15 @@ class SearchController extends Functions {
                 if (!empty($headings)) {
                     foreach ($headings as $heading) {
                         $pages[] = [
+                            'page'  => $page_title,
                             'title' => $heading['title'],
                             'link'  => $this->config('site_url').$file.'#'.$heading['id'],
                         ];
                     }
                 }
-
-                $results[] = [
-                    'page'  => $page_title,
-                    'pages' => $pages,
-                ];
             }
         }
 
-        return $this->cacheData('search_all_pages', $results);
+        return $this->cacheData('search_all_pages', $pages);
     }
 }

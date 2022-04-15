@@ -37,21 +37,21 @@ class ParsedownExt extends Parsedown {
 
         // Set headings
         if (isset($block['element']['text'])) {
-            $title = $block['element']['text'];
+            $page_title = $block['element']['text'];
             $level = $block['element']['name'];
-            $id = $this->createIdFromTitle($title);
+            $id = $this->createIdFromTitle($page_title);
 
             if ($level === 'h1') {
-                $this->title = $title;
+                $this->title = $page_title;
             }
 
             if (in_array($level, ['h2', 'h3', 'h4', 'h5', 'h6'])) {
                 $this->headings[] = [
-                    'title' => $title,
+                    'title' => $page_title,
                     'id'    => $id,
                 ];
 
-                $block['element']['text'] = '<'.$level.' id="'.$id.'"><a href="#'.$id.'">'.$title.'</a></'.$level.'>';
+                $block['element']['text'] = '<'.$level.' id="'.$id.'"><a href="#'.$id.'">'.$page_title.'</a></'.$level.'>';
             }
         }
 

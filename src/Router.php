@@ -49,40 +49,30 @@ class Router {
     /**
      * Store a route and a handling function to be executed when accessed using one of the specified methods.
      *
-     * @param string $methods Allowed methods, | delimited
-     * @param string $pattern A route pattern such as /about/system
-     * @param mixed  $fn      The handling function to be executed
+     * @param string $methods  Allowed methods, | delimited
+     * @param string $pattern  A route pattern such as /about/system
+     * @param mixed  $callback Callback
      */
-    public function match(string $methods, string $pattern, mixed $fn): void {
+    public function match(string $methods, string $pattern, mixed $callback): void {
         $pattern = $this->baseRoute.'/'.trim($pattern, '/');
         $pattern = $this->baseRoute ? rtrim($pattern, '/') : $pattern;
 
         foreach (explode('|', $methods) as $method) {
             $this->afterRoutes[$method][] = [
                 'pattern' => $pattern,
-                'fn'      => $fn,
+                'fn'      => $callback,
             ];
         }
     }
 
     /**
-     * Shorthand for a route accessed using any method.
-     *
-     * @param string $pattern A route pattern such as /about/system
-     * @param mixed  $fn      The handling function to be executed
-     */
-    public function all(string $pattern, mixed $fn): void {
-        $this->match('GET|POST|PUT|DELETE|OPTIONS|PATCH|HEAD', $pattern, $fn);
-    }
-
-    /**
      * Shorthand for a route accessed using GET.
      *
-     * @param string $pattern A route pattern such as /about/system
-     * @param mixed  $fn      The handling function to be executed
+     * @param string $pattern  A route pattern such as /about/system
+     * @param mixed  $callback Callback
      */
-    public function get(string $pattern, mixed $fn): void {
-        $this->match('GET', $pattern, $fn);
+    public function get(string $pattern, mixed $callback): void {
+        $this->match('GET', $pattern, $callback);
     }
 
     /**
@@ -95,18 +85,14 @@ class Router {
 
         // If getallheaders() is available, use that
         if (function_exists('getallheaders')) {
-            $headers = getallheaders();
-
-            // getallheaders() can return false if something went wrong
-            if ($headers !== false) {
-                return $headers;
-            }
+            $headers = (array)getallheaders();
         }
 
         // Method getallheaders() not available or went wrong: manually extract 'm
         foreach ($_SERVER as $name => $value) {
             if (str_starts_with($name, 'HTTP_') || ($name === 'CONTENT_TYPE') || ($name === 'CONTENT_LENGTH')) {
-                $headers[str_replace([' ', 'Http'], ['-', 'HTTP'], ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                $name_ = ucwords(strtolower(str_replace('_', ' ', substr($name, 5))));
+                $headers[str_replace([' ', 'Http'], ['-', 'HTTP'], $name_)] = $value;
             }
         }
 
@@ -180,10 +166,10 @@ class Router {
     /**
      * Set the 404 handling function.
      *
-     * @param mixed $fn The function to be executed
+     * @param mixed $callback The function to be executed
      */
-    public function set404(mixed $fn): void {
-        $this->notFoundCallback = $fn;
+    public function set404(mixed $callback): void {
+        $this->notFoundCallback = $callback;
     }
 
     /**
@@ -226,38 +212,13 @@ class Router {
      * @return int The number of routes handled
      */
     private function handle(array $routes, bool $quitAfterRun = false): int {
-        // Counter to keep track of the number of routes we've handled
-        $numHandled = 0;
+        $numHandled = 0; // Counter to keep track of the number of routes we've handled
 
-        // The current page URL
-        $uri = $this->getCurrentUri();
-
-        // Loop all routes
         foreach ($routes as $route) {
-            // get routing matches
-            $is_match = $this->patternMatches($route['pattern'], $uri, $matches);
-
             // is there a valid match?
-            if ($is_match) {
-
-                // Rework matches to only contain the matches, not the orig string
-                $matches = array_slice($matches, 1);
-
-                // Extract the matched URL parameters (and only the parameters)
-                $params = array_map(function ($match, $index) use ($matches) {
-                    // We have a following parameter: take the substring from the current param
-                    // position until the next one's position (thank you PREG_OFFSET_CAPTURE)
-                    if (isset($matches[$index + 1]) && isset($matches[$index + 1][0]) && is_array($matches[$index + 1][0])) {
-                        if ($matches[$index + 1][0][1] > -1) {
-                            return trim(substr($match[0][0], 0, $matches[$index + 1][0][1] - $match[0][1]), '/');
-                        }
-                    }
-
-                    return isset($match[0][0]) && $match[0][1] != -1 ? trim($match[0][0], '/') : null;
-                }, $matches, array_keys($matches));
-
+            if ($this->patternMatches($route['pattern'], $this->getCurrentUri(), $matches)) {
                 // Call the handling function with the URL parameters if the desired input is callable
-                $this->invoke($route['fn'], $params);
+                $this->invoke($route['fn'], $this->extractMatchedUrlParams($matches));
 
                 ++$numHandled;
 
@@ -273,21 +234,49 @@ class Router {
     }
 
     /**
-     * @param mixed $fn
+     * Extract matched url params.
+     *
+     * @param array $matches
+     *
+     * @return array
+     */
+    private function extractMatchedUrlParams(array $matches): array {
+        // Rework matches to only contain the matches, not the orig string
+        $matches = array_slice($matches, 1);
+
+        // Extract the matched URL parameters (and only the parameters)
+        return array_map(function ($match, $index) use ($matches) {
+            // We have a following parameter: take the substring from the current param
+            // position until the next one's position (thank you PREG_OFFSET_CAPTURE)
+            if (
+                isset($matches[$index + 1]) &&
+                isset($matches[$index + 1][0]) &&
+                is_array($matches[$index + 1][0]) &&
+                ($matches[$index + 1][0][1] > -1)
+            ) {
+                return trim(substr($match[0][0], 0, $matches[$index + 1][0][1] - $match[0][1]), '/');
+            }
+
+            return isset($match[0][0]) && $match[0][1] != -1 ? trim($match[0][0], '/') : null;
+        }, $matches, array_keys($matches));
+    }
+
+    /**
+     * @param mixed $callback
      * @param array $params
      *
      * @return void
      */
-    private function invoke(mixed $fn, array $params = []): void {
-        if (is_string($fn) && method_exists($fn, 'show')) {
-            $fn = [new $fn(), 'show'];
+    private function invoke(mixed $callback, array $params = []): void {
+        if (is_string($callback) && method_exists($callback, 'show')) {
+            $callback = [new $callback(), 'show'];
         }
 
-        if (is_callable($fn)) {
-            call_user_func_array($fn, $params);
+        if (is_callable($callback)) {
+            call_user_func_array($callback, $params);
         } else {
             echo 'Function is not callable<br>';
-            print_r($fn);
+            print_r($callback);
         }
     }
 
