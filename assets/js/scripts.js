@@ -14,26 +14,7 @@ if (search_field) {
                 if (search_field.value === '') {
                     search_result.classList.remove('show');
                 } else {
-                    let resp = JSON.parse(this.response);
-                    let result = '';
-
-                    if (!resp.status) {
-                        Array.prototype.forEach.call(resp, (data) => {
-                            if (data) {
-                                if (data.page !== data.title) {
-                                    result += `<li><a class="dropdown-item text-truncate" href="${data.link}">
-                                            <span class="fw-light opacity-75">${data.page}</span><br> ${data.title}
-                                        </a></li>`;
-                                } else {
-                                    result += `<li><a class="dropdown-item text-truncate" href="${data.link}">${data.title}</a></li>`;
-                                }
-                            }
-                        });
-                    } else {
-                        result = `<li><span class="dropdown-header fw-bold text-truncate">${resp.status}</span></li>`;
-                    }
-
-                    search_result.innerHTML = result;
+                    render_results(JSON.parse(this.response));
                     search_result.classList.add('show');
                 }
             }
@@ -42,3 +23,25 @@ if (search_field) {
         request.send();
     });
 }
+
+const render_results = (resp) => {
+    let result = '';
+
+    if (!resp.status) {
+        Array.prototype.forEach.call(resp, (data) => {
+            if (data) {
+                if (data.page !== data.title) {
+                    result += `<li><a class="dropdown-item text-truncate" href="${data.link}">
+                                    <span class="fw-light opacity-75">${data.page}</span><br> ${data.title}
+                                </a></li>`;
+                } else {
+                    result += `<li><a class="dropdown-item text-truncate" href="${data.link}">${data.title}</a></li>`;
+                }
+            }
+        });
+    } else {
+        result = `<li><span class="dropdown-header fw-bold text-truncate">${resp.status}</span></li>`;
+    }
+
+    search_result.innerHTML = result;
+};
