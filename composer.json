@@ -27,6 +27,9 @@
     "samdark/sitemap": "^2.4",
     "twig/twig": "^3.3"
   },
+  "suggest": {
+    "ext-iconv": "Optional for createIdFromTitle() method."
+  },
   "require-dev": {
     "phpstan/phpstan": "^1.5"
   },

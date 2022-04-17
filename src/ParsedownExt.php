@@ -66,7 +66,14 @@ class ParsedownExt extends Parsedown {
      * @return string
      */
     public function createIdFromTitle(string $title): string {
-        return strtolower(str_replace([' ', '(', ')', '/'], ['-', '', '', ''], $title));
+        $title = preg_replace('~[^\pL\d]+~u', '-', $title);
+        if (function_exists('iconv')) {
+            $title = iconv('utf-8', 'us-ascii//TRANSLIT', $title);
+        }
+        $title = preg_replace('~[^-\w]+~', '', $title);
+        $title = trim($title, '-');
+        $title = preg_replace('~-+~', '-', $title);
+        return strtolower($title);
     }
 
     /**
