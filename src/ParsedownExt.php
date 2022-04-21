@@ -77,7 +77,7 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Fix images paths and add css class
+     * Fix image paths and add css class
      *
      * @param mixed $Excerpt
      *

@@ -15,8 +15,8 @@ return [
     'site_description' => '',
     'site_path'        => '/', // If script is running in subdir, need to set the current directory name, e.g. /docs/ for site.com/docs
     'site_url'         => sprintf('http%s://%s', ((
-        isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === 1) ||
-        isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+        (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === 1)) ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
     ) ? 's' : ''), $_SERVER['SERVER_NAME']), // If that doesn't work, it may be replaced with the actual URL
     'site_url_sitemap' => 'http://docs.host', // For sitemap generator
     'keywords'         => ['docs', 'php'],
