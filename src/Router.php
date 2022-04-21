@@ -90,7 +90,7 @@ class Router {
 
         // Method getallheaders() not available or went wrong: manually extract 'm
         foreach ($_SERVER as $name => $value) {
-            if (str_starts_with($name, 'HTTP_') || ($name === 'CONTENT_TYPE') || ($name === 'CONTENT_LENGTH')) {
+            if (($name === 'CONTENT_TYPE') || ($name === 'CONTENT_LENGTH') || str_starts_with($name, 'HTTP_')) {
                 $name_ = ucwords(strtolower(str_replace('_', ' ', substr($name, 5))));
                 $headers[str_replace([' ', 'Http'], ['-', 'HTTP'], $name_)] = $value;
             }
@@ -108,7 +108,7 @@ class Router {
         // Take the method as found in $_SERVER
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // If it's a HEAD request override it to being GET and prevent any output, as per HTTP Specification
+        // If it's a HEAD request override it to GET and prevent any output, as per HTTP Specification
         // @url http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4
         if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
             ob_start();
@@ -148,10 +148,8 @@ class Router {
         if ($numHandled === 0) {
             $this->trigger404();
         } // If a route was handled, perform the finish callback (if any)
-        else {
-            if ($callback && is_callable($callback)) {
-                $callback();
-            }
+        else if ($callback && is_callable($callback)) {
+            $callback();
         }
 
         // If it originally was a HEAD request, clean up after ourselves by emptying the output buffer
@@ -200,11 +198,11 @@ class Router {
         $pattern = preg_replace('/\/{(.*?)}/', '/(.*?)', $pattern);
 
         // we may have a match!
-        return boolval(preg_match_all('#^'.$pattern.'$#', $uri, $matches, PREG_OFFSET_CAPTURE));
+        return (bool)preg_match_all('#^'.$pattern.'$#', $uri, $matches, PREG_OFFSET_CAPTURE);
     }
 
     /**
-     * Handle a set of routes: if a match is found, execute the relating handling function.
+     * Handle a set of routes: if a match is found, execute the related handling function.
      *
      * @param array $routes       Collection of route patterns and their handling functions
      * @param bool  $quitAfterRun Does the handle function need to quit after one route was matched?
@@ -245,19 +243,16 @@ class Router {
         $matches = array_slice($matches, 1);
 
         // Extract the matched URL parameters (and only the parameters)
-        return array_map(function ($match, $index) use ($matches) {
-            // We have a following parameter: take the substring from the current param
+        return array_map(static function ($match, $index) use ($matches) {
+            // We have the following parameter: take the substring from the current param
             // position until the next one's position (thank you PREG_OFFSET_CAPTURE)
             if (
-                isset($matches[$index + 1]) &&
-                isset($matches[$index + 1][0]) &&
-                is_array($matches[$index + 1][0]) &&
-                ($matches[$index + 1][0][1] > -1)
+                isset($matches[$index + 1][0]) && is_array($matches[$index + 1][0]) && ($matches[$index + 1][0][1] > -1)
             ) {
                 return trim(substr($match[0][0], 0, $matches[$index + 1][0][1] - $match[0][1]), '/');
             }
 
-            return isset($match[0][0]) && $match[0][1] != -1 ? trim($match[0][0], '/') : null;
+            return isset($match[0][0]) && $match[0][1] !== -1 ? trim($match[0][0], '/') : null;
         }, $matches, array_keys($matches));
     }
 
@@ -285,7 +280,7 @@ class Router {
      *
      */
     public function getCurrentUri(): string {
-        // Get the current Request URI and remove rewrite base path from it (= allows one to run the router in a sub folder)
+        // Get the current Request URI and remove a rewrite base path from it (= allows one to run the router in a sub folder)
         $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->getBasePath()));
 
         // Don't take query params into account on the URL

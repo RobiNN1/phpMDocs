@@ -22,9 +22,9 @@ class DocsController extends Functions {
      * @return void
      */
     public function show(string $path): void {
-        if (is_file($this->config('docs_path').$path.'.md')) {
+        if (is_file(self::config('docs_path').$path.'.md')) {
             $this->renderPage($path);
-        } else if (is_file($this->config('docs_path').$path.'/README.md')) {
+        } else if (is_file(self::config('docs_path').$path.'/README.md')) {
             $this->renderCategory($path);
         } else {
             $this->show404();

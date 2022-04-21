@@ -27,8 +27,8 @@ class Functions {
     private ?Cache $cache = null;
 
     public function __construct() {
-        if ($this->config('cache')['enable']) {
-            $this->cache = new Cache($this->config('cache'));
+        if (self::config('cache')['enable']) {
+            $this->cache = new Cache(self::config('cache'));
         }
     }
 
@@ -45,10 +45,10 @@ class Functions {
             $loader = new FilesystemLoader(__DIR__.'/../twig');
             $twig = new Environment($loader, [
                 'cache' => __DIR__.'/../cache/twig',
-                'debug' => $this->config('twig_debug'),
+                'debug' => self::config('twig_debug'),
             ]);
 
-            if ($this->config('twig_debug')) {
+            if (self::config('twig_debug')) {
                 $twig->addExtension(new DebugExtension());
             }
 
@@ -63,7 +63,7 @@ class Functions {
     }
 
     /**
-     * Check if link is active
+     * Check if a link is active
      *
      * @param string $page
      * @param bool   $start_with
@@ -71,14 +71,14 @@ class Functions {
      * @return bool
      */
     public function isActive(string $page, bool $start_with = false): bool {
-        $uri = str_replace($this->config('site_path'), '/', $_SERVER['REQUEST_URI']);
+        $uri = str_replace(self::config('site_path'), '/', $_SERVER['REQUEST_URI']);
         $page = preg_replace('/(\/+)/', '/', $page); // Remove trailing slashes
 
         return ($uri === $page || $uri === $page.'/') || ($start_with ? str_starts_with($uri, $page) : null);
     }
 
     /**
-     * Get relative path to docs from url
+     * Get a relative path to docs from url
      *
      * @param string $path
      *
@@ -87,7 +87,7 @@ class Functions {
     public static function path(string $path = ''): string {
         $current_path = html_entity_decode($_SERVER['REQUEST_URI']);
 
-        if (strcmp(self::config('site_path'), '/') != 0) {
+        if (strcmp(self::config('site_path'), '/') !== 0) {
             $current_path = str_replace(self::config('site_path'), '', $current_path);
         } else {
             $current_path = ltrim($current_path, '/');
@@ -115,7 +115,7 @@ class Functions {
                 continue;
             }
 
-            if (!in_array($filename, self::config('ignore_files'))) {
+            if (!in_array($filename, self::config('ignore_files'), true)) {
                 $file_path = $dir.'/'.$filename;
 
                 if (is_dir($file_path)) {
@@ -130,11 +130,11 @@ class Functions {
         natsort($dirs);
         $dirs = array_values($dirs);
 
-        return $remove_md_ext ? array_map(fn($name) => strtr($name, ['.md' => '']), $dirs) : $dirs;
+        return $remove_md_ext ? array_map(static fn($name) => strtr($name, ['.md' => '']), $dirs) : $dirs;
     }
 
     /**
-     * Get array of pages in category
+     * Get an array of pages in category
      *
      * @param string $path
      * @param bool   $description
@@ -146,11 +146,11 @@ class Functions {
 
         $path = $this->getCategory($path);
 
-        if (is_dir($this->config('docs_path').$path)) {
-            $dir = new DirectoryIterator($this->config('docs_path').$path);
+        if (is_dir(self::config('docs_path').$path)) {
+            $dir = new DirectoryIterator(self::config('docs_path').$path);
 
             foreach ($dir as $file) {
-                if (!$file->isDot() && !in_array($file->getFilename(), $this->config('ignore_files'))) {
+                if (!$file->isDot() && !in_array($file->getFilename(), self::config('ignore_files'), true)) {
                     $file_path = $path.'/'.str_replace('.md', '', $file->getFilename());
 
                     $md = new ParseMarkdown($file_path);
@@ -158,7 +158,7 @@ class Functions {
                     $pages[] = [
                         'title'       => $md->getTitle(),
                         'description' => $description ? $md->getDescription() : '',
-                        'url'         => $this->config('site_url').ltrim($file_path, '/'),
+                        'url'         => self::config('site_url').ltrim($file_path, '/'),
                         'is_dir'      => $file->isDir(),
                         'id'          => $file->getFilename(),
                         'path'        => trim($file_path, '/'),
@@ -167,7 +167,7 @@ class Functions {
             }
         }
 
-        usort($pages, fn($a, $b) => strcmp($a['id'], $b['id']));
+        usort($pages, static fn($a, $b) => strcmp($a['id'], $b['id']));
 
         return $this->cacheData('get_pages'.$path, $pages);
     }
@@ -191,11 +191,11 @@ class Functions {
      * @return mixed
      */
     public function cacheData(string $key, mixed $value): mixed {
-        if ($this->config('cache')['enable'] && $this->cache->isConnected()) {
+        if (self::config('cache')['enable'] && $this->cache->isConnected()) {
             if ($this->cache->has($key)) {
                 $value = $this->cache->get($key);
             } else {
-                $this->cache->set($key, $value, $this->config('cache')['expiration']);
+                $this->cache->set($key, $value, self::config('cache')['expiration']);
             }
         }
 
@@ -210,7 +210,7 @@ class Functions {
      * @return string
      */
     public function getCategory(string $path): string {
-        if (is_file($this->config('docs_path').$path.'.md')) {
+        if (is_file(self::config('docs_path').$path.'.md')) {
             $path = explode('/', $path);
             array_pop($path);
             $path = implode('/', $path);
@@ -231,7 +231,7 @@ class Functions {
 
         $config = (array)require __DIR__.'/../config.php';
 
-        $config['site_url'] = $config['site_url'].$config['site_path'];
+        $config['site_url'] .= $config['site_path'];
 
         return $config[$key] ?? null;
     }

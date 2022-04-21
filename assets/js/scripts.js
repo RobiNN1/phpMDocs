@@ -5,6 +5,9 @@ let search_field = document.getElementById('searchdocs');
 let search_result = document.getElementById('search_result');
 
 if (search_field) {
+    let no_items = `<li><span class="dropdown-header fw-bold text-truncate">Enter a search term to find results.</span></li>`;
+    search_result.innerHTML = no_items;
+
     search_field.addEventListener('keyup', () => {
         let request = new XMLHttpRequest();
         request.open('GET', SITEURL + 'search?page=' + search_field.value, true);
@@ -13,6 +16,7 @@ if (search_field) {
             if (this.status >= 200 && this.status < 400) {
                 if (search_field.value === '') {
                     search_result.classList.remove('show');
+                    search_result.innerHTML = no_items;
                 } else {
                     render_results(JSON.parse(this.response));
                     search_result.classList.add('show');

@@ -55,8 +55,8 @@ class SearchController extends Functions {
     private function allPages(): array {
         $pages = [];
 
-        if (is_dir($this->config('docs_path'))) {
-            $dirs = $this->scanDir($this->config('docs_path'));
+        if (is_dir(self::config('docs_path'))) {
+            $dirs = self::scanDir(self::config('docs_path'));
 
             foreach ($dirs as $file) {
                 $md = new ParseMarkdown($file);
@@ -67,7 +67,7 @@ class SearchController extends Functions {
                 $pages[] = [
                     'page'  => $page_title,
                     'title' => $page_title,
-                    'link'  => $this->config('site_url').$file,
+                    'link'  => self::config('site_url').$file,
                 ];
 
                 if (!empty($headings)) {
@@ -75,7 +75,7 @@ class SearchController extends Functions {
                         $pages[] = [
                             'page'  => $page_title,
                             'title' => $heading['title'],
-                            'link'  => $this->config('site_url').$file.'#'.$heading['id'],
+                            'link'  => self::config('site_url').$file.'#'.$heading['id'],
                         ];
                     }
                 }
