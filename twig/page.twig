@@ -13,7 +13,7 @@
     <div class="row">
         {% if all_pages %}
             <div class="col-12 col-lg-2">
-                <nav class="navbar-expand-lg d-block sticky-top rounded-1 mt-3 mt-md-0">
+                <nav class="navbar-expand-lg d-block sticky-top rounded-1 mt-3 mt-md-0" aria-label="">
                     <a href="#" data-bs-toggle="collapse" data-bs-target="#allpages" class="d-lg-none align-middle">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi" style="vertical-align: -.125em;" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
@@ -44,13 +44,13 @@
             <div class="mt-3">{{ content|raw }}</div>
         </div>
 
-        {% if links %}
+        {% if contents %}
             <div class="col-12 col-lg-{{ all_pages ? 2 : 3 }}">
                 <div class="sticky-top mt-3 mt-md-0" style="z-index: inherit;">
-                    <nav class="toc rounded-1 mt-md-3">
+                    <nav class="toc rounded-1 mt-md-3" aria-label="">
                         <div class="title mb-0">Table of contents</div>
                         <ul class="list-unstyled mb-0">
-                            {% for link in links %}
+                            {% for link in contents %}
                                 <li class="text-truncate">
                                     <a class="px-0 py-1 nav-link" href="#{{ link.id }}">{{ link.title|raw }}</a>
                                 </li>
