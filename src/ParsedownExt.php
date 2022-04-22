@@ -15,6 +15,9 @@ namespace RobiNN\Docs;
 use Parsedown;
 
 class ParsedownExt extends Parsedown {
+    public function __construct(private readonly Documentation $docs) {
+    }
+
     /**
      * @var array
      */
@@ -87,7 +90,7 @@ class ParsedownExt extends Parsedown {
         $inline = parent::inlineImage($Excerpt);
 
         if (isset($inline)) {
-            $path = Functions::config('docs_path').str_replace('../', '', $inline['element']['attributes']['src']);
+            $path = $this->docs->config('docs_path').str_replace('../', '', $inline['element']['attributes']['src']);
             $image_type = pathinfo($path, PATHINFO_EXTENSION);
             $img_data = file_get_contents($path);
 

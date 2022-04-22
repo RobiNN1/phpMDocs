@@ -13,20 +13,22 @@ declare(strict_types=1);
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use RobiNN\Docs\Functions;
+use RobiNN\Docs\Documentation;
 use samdark\sitemap\Sitemap;
 
 $_SERVER['SERVER_NAME'] = '';
 
 $sitemap = new Sitemap(__DIR__.'/../sitemap.xml');
 
-$sitemap->addItem(Functions::config('site_url_sitemap'), time(), Sitemap::MONTHLY, '1.0');
+$docs = new Documentation;
 
-if (is_dir(Functions::config('docs_path'))) {
-    $dirs = Functions::scanDir(Functions::config('docs_path'));
+$sitemap->addItem($docs->config('site_url_sitemap'), time(), Sitemap::MONTHLY, '1.0');
+
+if (is_dir($docs->config('docs_path'))) {
+    $dirs = $docs->scanDir($docs->config('docs_path'));
 
     foreach ($dirs as $file) {
-        $sitemap->addItem(Functions::config('site_url_sitemap').'/'.$file, time(), Sitemap::WEEKLY);
+        $sitemap->addItem($docs->config('site_url_sitemap').'/'.$file, time(), Sitemap::WEEKLY);
     }
 }
 
@@ -40,7 +42,7 @@ Disallow: /src/
 Disallow: /twig/
 Disallow: /vendor/
 
-Sitemap: '.Functions::config('site_url_sitemap').'/sitemap.xml
+Sitemap: '.$docs->config('site_url_sitemap').'/sitemap.xml
 ';
 file_put_contents(__DIR__.'/../robots.txt', $robots_content);
 

@@ -12,19 +12,19 @@ declare(strict_types=1);
 
 namespace RobiNN\Docs\Controllers;
 
-use RobiNN\Docs\Functions;
+use RobiNN\Docs\Documentation;
 use RobiNN\Docs\ParseMarkdown;
 
-class DocsController extends Functions {
+class DocsController extends Documentation {
     /**
      * @param string $path
      *
      * @return void
      */
     public function show(string $path): void {
-        if (is_file(self::config('docs_path').$path.'.md')) {
+        if (is_file($this->config('docs_path').$path.'.md')) {
             $this->renderPage($path);
-        } else if (is_file(self::config('docs_path').$path.'/README.md')) {
+        } else if (is_file($this->config('docs_path').$path.'/README.md')) {
             $this->renderCategory($path);
         } else {
             $this->show404();
@@ -45,11 +45,11 @@ class DocsController extends Functions {
 
         $all_pages = $this->getPages($path);
 
-        echo $this->renderTpl('page.twig', [
+        echo $this->tpl('page', [
             'title'       => $md->getTitle(),
             'description' => $md->getDescription(),
             'content'     => $html,
-            'links'       => $contents,
+            'contents'    => $contents,
             'all_pages'   => $all_pages, // pages in category
         ]);
     }
@@ -64,7 +64,7 @@ class DocsController extends Functions {
         $pages = $this->cacheData(str_replace('/', '-', $readme_path), $this->getPages($readme_path));
         $md = new ParseMarkdown($readme_path);
 
-        echo $this->renderTpl('category.twig', [
+        echo $this->tpl('category', [
             'title'       => $md->getTitle(),
             'description' => $md->getDescription(),
             'content'     => $md->parse(),

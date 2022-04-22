@@ -19,12 +19,19 @@ class ParseMarkdown {
     private ParsedownExt $parsedown;
 
     /**
+     * @var Documentation
+     */
+    private Documentation $docs;
+
+    /**
      * @var ?string
      */
     private ?string $text;
 
     public function __construct(?string $text = null) {
-        $this->parsedown = new ParsedownExt();
+        $this->docs = new Documentation;
+
+        $this->parsedown = new ParsedownExt($this->docs);
 
         $this->text = is_file($this->getFile($text)) ? file_get_contents($this->getFile($text)) : $text;
     }
@@ -58,7 +65,7 @@ class ParseMarkdown {
      * @return string
      */
     public function getDescription(): string {
-        $description = strip_tags(Functions::config('site_description'));
+        $description = strip_tags($this->docs->config('site_description'));
 
         $data = explode("\n", (string)$this->text);
 
@@ -92,7 +99,7 @@ class ParseMarkdown {
      * @return string
      */
     private function getFile(string $path): string {
-        $path = Functions::config('docs_path').trim($path, '/');
+        $path = $this->docs->config('docs_path').trim($path, '/');
         return is_file($path.'.md') ? $path.'.md' : $path.'/README.md';
     }
 }

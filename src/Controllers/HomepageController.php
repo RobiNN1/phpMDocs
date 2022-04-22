@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace RobiNN\Docs\Controllers;
 
-use RobiNN\Docs\Functions;
+use RobiNN\Docs\Documentation;
 
-class HomepageController extends Functions {
+class HomepageController extends Documentation {
     /**
      * @return void
      */
     public function show(): void {
-        echo $this->renderTpl('home.twig', [
+        echo $this->tpl('home', [
             'categories' => $this->cacheData('homepage_categories', $this->getPages('', true)),
         ]);
     }

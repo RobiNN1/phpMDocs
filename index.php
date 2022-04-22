@@ -13,8 +13,11 @@ declare(strict_types=1);
 require_once __DIR__.'/vendor/autoload.php';
 
 $router = new RobiNN\Docs\Router();
-$router->set404([(new RobiNN\Docs\Functions), 'show404']);
-$router->setBasePath(RobiNN\Docs\Functions::config('site_path'));
+
+$docs = new RobiNN\Docs\Documentation;
+
+$router->set404([$docs, 'show404']);
+$router->setBasePath($docs->config('site_path'));
 
 $router->get('/', RobiNN\Docs\Controllers\HomepageController::class);
 $router->get('search', RobiNN\Docs\Controllers\SearchController::class);
