@@ -87,6 +87,7 @@ class Documentation {
     public function path(string $path = ''): string {
         $current_path = html_entity_decode($_SERVER['REQUEST_URI']);
 
+        // Remove extra slashes and domain
         if (strcmp($this->config('site_path'), '/') !== 0) {
             $current_path = str_replace($this->config('site_path'), '', $current_path);
         } else {
@@ -191,6 +192,8 @@ class Documentation {
      * @return mixed
      */
     public function cacheData(string $key, mixed $value): mixed {
+        $key = strtr($key, ['/' => '-']);
+
         if ($this->config('cache')['enable'] && $this->cache->isConnected()) {
             if ($this->cache->has($key)) {
                 $value = $this->cache->get($key);

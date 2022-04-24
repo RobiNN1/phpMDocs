@@ -17,11 +17,9 @@ use RobiNN\Docs\Documentation;
 use samdark\sitemap\Sitemap;
 
 $_SERVER['SERVER_NAME'] = '';
-
-$sitemap = new Sitemap(__DIR__.'/../sitemap.xml');
-
 $docs = new Documentation;
 
+$sitemap = new Sitemap(__DIR__.'/../sitemap.xml');
 $sitemap->addItem($docs->config('site_url_sitemap'), time(), Sitemap::MONTHLY, '1.0');
 
 if (is_dir($docs->config('docs_path'))) {
@@ -46,5 +44,5 @@ Sitemap: '.$docs->config('site_url_sitemap').'/sitemap.xml
 ';
 file_put_contents(__DIR__.'/../robots.txt', $robots_content);
 
-echo 'Sitemap successfully generated.';
+echo "\033[32mSitemap successfully generated.\033[0m\n";
 exit(0);

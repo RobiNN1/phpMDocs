@@ -40,8 +40,8 @@ class DocsController extends Documentation {
         $md = new ParseMarkdown($path);
 
         // bugfix, content must first be parsed in order to use headings
-        $html = $md->parse();
-        $contents = $md->getHeadings();
+        $html = $this->cacheData('html-'.$path, $md->parse());
+        $contents = $this->cacheData('contents-'.$path, $md->getHeadings());
 
         $all_pages = $this->getPages($path);
 
