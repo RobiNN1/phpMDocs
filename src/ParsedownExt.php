@@ -29,7 +29,7 @@ class ParsedownExt extends Parsedown {
     public string $title = '';
 
     /**
-     * Get headings
+     * Get headings.
      *
      * @param mixed $Line
      *
@@ -62,7 +62,7 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Create id from title
+     * Create id from title.
      *
      * @param string $title
      *
@@ -76,11 +76,12 @@ class ParsedownExt extends Parsedown {
         $title = preg_replace('~[^-\w]+~', '', $title);
         $title = trim($title, '-');
         $title = preg_replace('~-+~', '-', $title);
+
         return strtolower($title);
     }
 
     /**
-     * Fix image paths and add css class
+     * Fix image paths and add css class.
      *
      * @param mixed $Excerpt
      *
@@ -102,7 +103,7 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Add class to table
+     * Add class to table.
      *
      * @param mixed $Line
      * @param mixed $Block
@@ -120,7 +121,7 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Remove .md from links
+     * Remove .md from links.
      *
      * @param mixed $Excerpt
      *

@@ -29,7 +29,7 @@ class ParseMarkdown {
     private ?string $text;
 
     public function __construct(?string $text = null) {
-        $this->docs = new Documentation;
+        $this->docs = new Documentation();
 
         $this->parsedown = new ParsedownExt($this->docs);
 
@@ -37,7 +37,7 @@ class ParseMarkdown {
     }
 
     /**
-     * Parse content
+     * Parse content.
      *
      * @return string
      */
@@ -46,13 +46,14 @@ class ParseMarkdown {
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
     public function getTitle(): string {
         if (empty($this->parsedown->title)) {
             $data = explode("\n", (string)$this->text);
+
             return array_reverse(explode('# ', $data[0], 2))[0];
         }
 
@@ -60,7 +61,7 @@ class ParseMarkdown {
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -83,7 +84,7 @@ class ParseMarkdown {
     }
 
     /**
-     * Get headings
+     * Get headings.
      *
      * @return array
      */
@@ -92,7 +93,7 @@ class ParseMarkdown {
     }
 
     /**
-     * Get file
+     * Get file.
      *
      * @param string $path
      *
@@ -100,6 +101,7 @@ class ParseMarkdown {
      */
     private function getFile(string $path): string {
         $path = $this->docs->config('docs_path').trim($path, '/');
+
         return is_file($path.'.md') ? $path.'.md' : $path.'/README.md';
     }
 }
