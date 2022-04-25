@@ -103,7 +103,7 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Add class to table.
+     * Add class to the table.
      *
      * @param mixed $Line
      * @param mixed $Block
