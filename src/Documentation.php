@@ -33,7 +33,7 @@ class Documentation {
     }
 
     /**
-     * Render template
+     * Render template.
      *
      * @param string $tpl
      * @param array  $data
@@ -63,7 +63,7 @@ class Documentation {
     }
 
     /**
-     * Check if a link is active
+     * Check if a link is active.
      *
      * @param string $page
      * @param bool   $start_with
@@ -78,7 +78,7 @@ class Documentation {
     }
 
     /**
-     * Get a relative path to docs from url
+     * Get a relative path to docs from url.
      *
      * @param string $path
      *
@@ -101,7 +101,7 @@ class Documentation {
     }
 
     /**
-     * Get recursively all files and dirs
+     * Get recursively all files and dirs.
      *
      * @param string $dir
      * @param bool   $remove_md_ext
@@ -131,11 +131,11 @@ class Documentation {
         natsort($dirs);
         $dirs = array_values($dirs);
 
-        return $remove_md_ext ? array_map(static fn($name) => strtr($name, ['.md' => '']), $dirs) : $dirs;
+        return $remove_md_ext ? array_map(static fn ($name) => strtr($name, ['.md' => '']), $dirs) : $dirs;
     }
 
     /**
-     * Get an array of pages in category
+     * Get an array of pages in category.
      *
      * @param string $path
      * @param bool   $description
@@ -168,13 +168,13 @@ class Documentation {
             }
         }
 
-        usort($pages, static fn($a, $b) => strcmp($a['id'], $b['id']));
+        usort($pages, static fn ($a, $b) => strcmp($a['id'], $b['id']));
 
         return $this->cacheData('get_pages'.$path, $pages);
     }
 
     /**
-     * Show error 404 page
+     * Show error 404 page.
      *
      * @return void
      */
@@ -184,7 +184,7 @@ class Documentation {
     }
 
     /**
-     * Cache data
+     * Cache data.
      *
      * @param string $key
      * @param mixed  $value
@@ -206,7 +206,7 @@ class Documentation {
     }
 
     /**
-     * Get category path
+     * Get category path.
      *
      * @param string $path
      *
@@ -223,7 +223,7 @@ class Documentation {
     }
 
     /**
-     * Get Docs config
+     * Get Docs config.
      *
      * @param ?string $key
      *

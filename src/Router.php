@@ -13,11 +13,12 @@ declare(strict_types=1);
 namespace RobiNN\Docs;
 
 /**
- * Original code by:
+ * Original code by:.
  *
  * @author    Bram(us) Van Damme <bramus@bram.us>
  * @copyright Copyright (c), 2013 Bram(us) Van Damme
  * @license   MIT public license
+ *
  * @link      https://github.com/bramus/router
  */
 class Router {
@@ -171,7 +172,7 @@ class Router {
     }
 
     /**
-     * Triggers 404 response
+     * Triggers 404 response.
      *
      * @return void
      */
@@ -185,7 +186,7 @@ class Router {
 
     /**
      * Replace all curly braces matches {} into word patterns (like Laravel)
-     * Checks if there is a routing match
+     * Checks if there is a routing match.
      *
      * @param string $pattern
      * @param string $uri
@@ -218,7 +219,7 @@ class Router {
                 // Call the handling function with the URL parameters if the desired input is callable
                 $this->invoke($route['fn'], $this->extractMatchedUrlParams($matches));
 
-                ++$numHandled;
+                $numHandled++;
 
                 // If we need to quit, then quit
                 if ($quitAfterRun) {
@@ -277,7 +278,6 @@ class Router {
 
     /**
      * Define the current relative URI.
-     *
      */
     public function getCurrentUri(): string {
         // Get the current Request URI and remove a rewrite base path from it (= allows one to run the router in a sub folder)
@@ -294,7 +294,6 @@ class Router {
 
     /**
      * Return server base Path, and define it if isn't defined.
-     *
      */
     public function getBasePath(): string {
         return $this->serverBasePath;
