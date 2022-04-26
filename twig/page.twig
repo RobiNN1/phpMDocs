@@ -51,8 +51,8 @@
                         <div class="title mb-0">Table of contents</div>
                         <ul class="list-unstyled mb-0">
                             {% for link in contents %}
-                                <li class="text-truncate">
-                                    <a class="px-0 py-1 nav-link" href="#{{ link.id }}">{{ link.title|raw }}</a>
+                                <li>
+                                    <a class="px-0 py-1 nav-link text-truncate" href="#{{ link.id }}">{{ link.title|raw }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
