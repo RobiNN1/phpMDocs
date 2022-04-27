@@ -174,7 +174,7 @@ class Documentation {
     }
 
     /**
-     * Check id page exists.
+     * Check if page exists.
      *
      * @param string $path
      *
