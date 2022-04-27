@@ -85,6 +85,18 @@ class Documentation {
      * @return string
      */
     public function path(string $path = ''): string {
+        $count = substr_count($this->currentPath(), '/');
+        $docs_path = str_repeat('../', $count);
+
+        return !empty($path) ? $docs_path.$path : $docs_path;
+    }
+
+    /**
+     * Get a current path.
+     *
+     * @return string
+     */
+    public function currentPath(): string {
         $current_path = html_entity_decode($_SERVER['REQUEST_URI']);
 
         // Remove extra slashes and domain
@@ -94,10 +106,7 @@ class Documentation {
             $current_path = ltrim($current_path, '/');
         }
 
-        $count = substr_count($current_path, '/');
-        $docs_path = str_repeat('../', $count);
-
-        return !empty($path) ? $docs_path.$path : $docs_path;
+        return $current_path;
     }
 
     /**
