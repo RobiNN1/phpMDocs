@@ -30,9 +30,7 @@ class ParseMarkdown {
 
     public function __construct(?string $text = null) {
         $this->docs = new Documentation();
-
         $this->parsedown = new ParsedownExt($this->docs);
-
         $this->text = is_file($this->getFile($text)) ? file_get_contents($this->getFile($text)) : $text;
     }
 

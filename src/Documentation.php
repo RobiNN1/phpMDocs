@@ -174,6 +174,17 @@ class Documentation {
     }
 
     /**
+     * Check id page exists.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    public function exists(string $path): bool {
+        return is_file($this->config('docs_path').$path.'.md');
+    }
+
+    /**
      * Show error 404 page.
      *
      * @return void
@@ -213,7 +224,7 @@ class Documentation {
      * @return string
      */
     public function getCategory(string $path): string {
-        if (is_file($this->config('docs_path').$path.'.md')) {
+        if ($this->exists($path)) {
             $paths = explode('/', $path);
             array_pop($paths); // Remove the page name so that we can retrieve its folder
             $path = implode('/', $paths);

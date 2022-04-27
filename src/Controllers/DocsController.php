@@ -22,9 +22,9 @@ class DocsController extends Documentation {
      * @return void
      */
     public function show(string $path): void {
-        if (is_file($this->config('docs_path').$path.'.md')) {
+        if ($this->exists($path)) {
             $this->renderPage($path);
-        } else if (is_file($this->config('docs_path').$path.'/README.md')) {
+        } else if ($this->exists($path.'/README')) {
             $this->renderCategory($path);
         } else {
             $this->show404();
@@ -40,18 +40,15 @@ class DocsController extends Documentation {
         $md = new ParseMarkdown($path);
 
         // bugfix, content must first be parsed in order to use headings
-        $html = $this->cacheData('html-'.$path, $md->parse());
-        $contents = $this->cacheData('contents-'.$path, $md->getHeadings());
+        $content = $this->cacheData('html-'.$path, $md->parse());
+        $title = $md->getTitle();
+        $description = $md->getDescription();
+        $toc = $this->cacheData('toc-'.$path, $md->getHeadings());
+        $all_pages = $this->getPages($path); // pages in category - left sidebar
 
-        $all_pages = $this->getPages($path);
-
-        echo $this->tpl('page', [
-            'title'       => $md->getTitle(),
-            'description' => $md->getDescription(),
-            'content'     => $html,
-            'contents'    => $contents,
-            'all_pages'   => $all_pages, // pages in category
-        ]);
+        echo $this->tpl('page',
+            compact('title', 'description', 'content', 'toc', 'all_pages')
+        );
     }
 
     /**
