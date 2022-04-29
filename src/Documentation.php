@@ -252,7 +252,7 @@ class Documentation {
     public function config(?string $key = null): mixed {
         static $config = [];
 
-        $config = (array)require __DIR__.'/../config.php';
+        $config = (array) require __DIR__.'/../config.php';
 
         $config['site_url'] .= $config['site_path'];
 

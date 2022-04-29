@@ -24,7 +24,7 @@ class DocsController extends Documentation {
     public function show(string $path): void {
         if ($this->exists($path)) {
             $this->renderPage($path);
-        } else if ($this->exists($path.'/README')) {
+        } elseif ($this->exists($path.'/README')) {
             $this->renderCategory($path);
         } else {
             $this->show404();
@@ -65,7 +65,7 @@ class DocsController extends Documentation {
             'title'       => $md->getTitle(),
             'description' => $md->getDescription(),
             'content'     => $md->parse(),
-            'columns'     => array_chunk($pages, (int)ceil(count($pages) / 3)),
+            'columns'     => array_chunk($pages, (int) ceil(count($pages) / 3)),
         ]);
     }
 }

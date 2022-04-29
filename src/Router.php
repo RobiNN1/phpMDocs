@@ -84,7 +84,7 @@ class Router {
 
         // If getallheaders() is available, use that
         if (function_exists('getallheaders')) {
-            $headers = (array)getallheaders();
+            $headers = (array) getallheaders();
         }
 
         // Method getallheaders() not available or went wrong: manually extract 'm
@@ -113,7 +113,7 @@ class Router {
             ob_start();
             $method = 'GET';
         } // If it's a POST request, check for a method override header
-        else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $headers = $this->getRequestHeaders();
             if (isset($headers['X-HTTP-Method-Override']) && in_array($headers['X-HTTP-Method-Override'], ['PUT', 'DELETE', 'PATCH'])) {
                 $method = $headers['X-HTTP-Method-Override'];
@@ -147,7 +147,7 @@ class Router {
         if ($numHandled === 0) {
             $this->trigger404();
         } // If a route was handled, perform the finish callback (if any)
-        else if ($callback && is_callable($callback)) {
+        elseif ($callback && is_callable($callback)) {
             $callback();
         }
 
@@ -197,7 +197,7 @@ class Router {
         $pattern = preg_replace('/\/{(.*?)}/', '/(.*?)', $pattern);
 
         // we may have a match!
-        return (bool)preg_match_all('#^'.$pattern.'$#', $uri, $matches, PREG_OFFSET_CAPTURE);
+        return (bool) preg_match_all('#^'.$pattern.'$#', $uri, $matches, PREG_OFFSET_CAPTURE);
     }
 
     /**
