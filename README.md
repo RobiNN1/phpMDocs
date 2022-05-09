@@ -8,7 +8,7 @@ Simple but powerful Markdown docs.
 - Customizable Twig templates (Note: default design is just plain Bootstrap)
 - Automatically generated ToC and list of pages under category
 - Cache for faster loading
-- Sitemap and robots.txt generato, run to generate `composer sitemap`
+- Sitemap and robots.txt generator, run to generate `composer sitemap`
 
 ## Installation
 
