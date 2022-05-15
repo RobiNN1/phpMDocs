@@ -25,7 +25,7 @@
     "erusev/parsedown": "^1.7",
     "robinn/cache": "^1.0",
     "samdark/sitemap": "^2.4",
-    "twig/twig": "^3.3"
+    "twig/twig": "^3.4"
   },
   "suggest": {
     "ext-iconv": "Optional for createIdFromTitle() method."
