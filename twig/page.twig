@@ -4,27 +4,29 @@
 {% block description %}{{ description }}{% endblock %}
 {% block container_id %}page{% endblock %}
 {% block head_content %}
-    <link href="{{ path('assets/highlight.js/vs.min.css') }}" rel="stylesheet">
+    <link href="{{ path('assets/highlight.js/googlecode.min.css') }}" rel="stylesheet">
     <script src="{{ path('assets/highlight.js/highlight.min.js') }}"></script>
     <script>hljs.highlightAll();</script>
 {% endblock %}
 
 {% block body %}
-    <div class="row">
+    <div class="grid grid-cols-12 gap-4">
         {% if all_pages %}
-            <div class="col-12 col-lg-2">
-                <nav class="navbar-expand-lg d-block sticky-top rounded-1 mt-3 mt-md-0" aria-label="">
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#allpages" class="d-lg-none align-middle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi" style="vertical-align: -.125em;" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
-                        </svg>
-                    </a>
-                    <span class="d-lg-none">Show pages</span>
-                    <div class="collapse navbar-collapse mt-md-3" id="allpages">
-                        <ul class="list-unstyled mb-0 overflow-hidden">
+            <div class="col-span-12 md:col-span-2">
+                <nav class="mt-3 md:mt-0" aria-label="" x-data="{ toggleSidebar: false }">
+                    <div class="flex items-center sm:hidden">
+                        <button class="block text-gray-600 hover:text-black" type="button" @click="toggleSidebar = !toggleSidebar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </button>
+                        <span>Show pages</span>
+                    </div>
+                    <div class="hidden md:block" :class="{'block' : toggleSidebar, 'hidden' : !toggleSidebar}">
+                        <ul>
                             {% for link in all_pages %}
-                                <li class="py-1 text-truncate">
-                                    <a{{ is_active('/' ~ link.path) ? ' class="text-dark"' : '' }} href="{{ link.url }}">
+                                <li class="py-1 truncate">
+                                    <a {{ is_active('/' ~ link.path) ? ' class="text-gray-800"' : '' }} href="{{ link.url }}">
                                         {{ link.title|raw }}
                                         {% if link.is_dir %}
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi" style="vertical-align: -.125em;" viewBox="0 0 16 16">
@@ -40,24 +42,20 @@
             </div>
         {% endif %}
 
-        <div class="col-12 col-lg-{{ all_pages ? 8 : 9 }}">
-            <div class="mt-3">{{ content|raw }}</div>
+        <div class="col-span-12 {{ all_pages ? 'md:col-span-8' : 'md:col-span-10' }}">
+            <div class="mt-3 md:mt-0">{{ content|raw }}</div>
         </div>
 
         {% if toc %}
-            <div class="col-12 col-lg-{{ all_pages ? 2 : 3 }}">
-                <div class="sticky-top mt-3 mt-md-0" style="z-index: inherit;">
-                    <nav class="toc rounded-1 mt-md-3" aria-label="">
-                        <div class="title mb-0">Table of contents</div>
-                        <ul class="list-unstyled mb-0">
-                            {% for link in toc %}
-                                <li>
-                                    <a class="px-0 py-1 nav-link text-truncate" href="#{{ link.id }}">{{ link.title|raw }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </nav>
-                </div>
+            <div class="col-span-12 md:col-span-2">
+                <nav class="rounded-1 mt-3 md:mt-0" aria-label="">
+                    <div class="text-gray-500">Table of contents</div>
+                    <ul>
+                        {% for link in toc %}
+                            <li class="py-1 truncate"><a href="#{{ link.id }}">{{ link.title|raw }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
             </div>
         {% endif %}
     </div>

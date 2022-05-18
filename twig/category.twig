@@ -9,10 +9,9 @@
 
     {% if columns %}
         <hr>
-        <div class="row mt-4">
+        <div class="grid grid-cols-4 gap-4 mt-4">
             {% for column in columns %}
-                <div class="col-12 col-md-4">
-                    <ul class="list-unstyled">
+                    <ul>
                         {% for page in column %}
                             <li>
                                 <a href="{{ page.url }}">{{ page.title }}
@@ -25,7 +24,6 @@
                             </li>
                         {% endfor %}
                     </ul>
-                </div>
             {% endfor %}
         </div>
     {% endif %}

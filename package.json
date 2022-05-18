@@ -1,0 +1,27 @@
+{
+  "name": "mdocs",
+  "version": "1.0.0",
+  "description": "Simple but powerful Markdown docs.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "npx tailwindcss -i ./assets/css/src.css -o ./assets/css/styles.css",
+    "watch": "npx tailwindcss -i ./assets/css/src.css -o ./assets/css/styles.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobiNN1/Markdown-Docs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RobiNN1/Markdown-Docs/issues"
+  },
+  "homepage": "https://github.com/RobiNN1/Markdown-Docs#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.0"
+  }
+}
