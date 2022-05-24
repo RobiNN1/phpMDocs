@@ -2,6 +2,8 @@
 
 Simple but powerful Markdown docs.
 
+![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=RobiNN1.Markdown-Docs)
+
 ## Features
 
 - Search within Markdown files
