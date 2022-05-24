@@ -31,7 +31,7 @@
     "ext-iconv": "Optional for createIdFromTitle() method."
   },
   "require-dev": {
-    "phpstan/phpstan": "^1.6"
+    "phpstan/phpstan": "^1.7"
   },
   "autoload": {
     "psr-4": {
