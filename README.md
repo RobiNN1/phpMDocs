@@ -7,8 +7,8 @@ Simple but powerful Markdown docs.
 ## Features
 
 - Search within Markdown files
-- Customizable Twig templates (Note: default design is just plain Bootstrap)
-- Automatically generated ToC and list of pages under category
+- Customizable Twig templates
+- Automatically generated ToC and sidebar content
 - Cache for faster loading
 - Sitemap and robots.txt generator, run to generate `composer sitemap`
 
@@ -24,3 +24,8 @@ Run `composer install` before use.
 
 - PHP >= 8.1
 - mod_rewrite or alternative
+
+## Development
+
+For compiling Tailwind CSS run `npm install` and then
+`npm run build` or `npm run watch` auto-compiling.
