@@ -14,9 +14,10 @@ Simple but powerful Markdown docs.
 
 ## Installation
 
-Simply extract the content to the root directory of the website and set a path to documentation content.
+Simply extract the content to the root directory of the website.
+Or put it to sub folder, in this case, need to update `site_path` option in config.php file.
 
-Or put it to do folder, in this case, need to update `site_path` option in config.php file.
+If necessary, set the path to the documentation content (`docs_path` option).
 
 Run `composer install` before use.
 
@@ -28,4 +29,4 @@ Run `composer install` before use.
 ## Development
 
 For compiling Tailwind CSS run `npm install` and then
-`npm run build` or `npm run watch` auto-compiling.
+`npm run build` or `npm run watch` for auto-compiling.
