@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:x-on="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>{% block page_title %}{% endblock %}{{ config('site_title') }}</title>
@@ -12,10 +12,10 @@
     <script src="{{ path('assets/js/alpinejs.min.js') }}" defer></script>
     {% block head_content %}{% endblock %}
 </head>
-<body class="antialiased text-gray-900">
+<body class="antialiased text-gray-900 bg-gray-50">
 {% block header %}
     <header>
-        <nav class="border-b mb-4 bg-white" x-data="{ toggleNav: false }">
+        <nav class="mb-4 bg-white" x-data="{ toggleNav: false }">
             <div class="container lg:max-w-7xl mx-auto px-4 py-4">
                 <div class="relative flex justify-between flex-col sm:flex-row">
                     <div class="flex flex-1 justify-between">
@@ -37,18 +37,10 @@
                                 </a>
                             {% endfor %}
                         {% endif %}
-                        <div class="sm:ml-2 relative"
-                             x-data="{open: false,toggle() {if (this.open) {return this.close()}this.$refs.button.focus();this.open = true},
-                             close(focusAfter) {if (! this.open) return;this.open = false;focusAfter && focusAfter.focus();}}"
-                             x-on:keydown.escape.prevent.stop="close($refs.button)"
-                             x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
-                             x-id="['dropdown-button']">
-                            <input x-ref="button" x-on:click="toggle()" :aria-expanded="open"
-                                   :aria-controls="$id('dropdown-button')"
-                                   class="appearance-none bg-white border border-gray-400 rounded-md py-1 px-3 text-base leading-normal focus:outline-none focus:ring focus:ring-opacity-30 focus:ring-wave-500 focus:border-wave-400"
-                                   id="searchdocs" type="text" placeholder="Search..." aria-label="">
-                            <ul x-ref="panel" x-show="open" x-transition.origin.top.left x-on:click.outside="close($refs.button)" :id="$id('dropdown-button')"
-                                class="absolute bg-white rounded border w-full mt-2 shadow h-auto max-h-80 overflow-x-hidden" id="search_result"></ul>
+                        <div class="sm:ml-2 relative" x-data="{ ddmshow: false }" @click.away="ddmshow = false">
+                            <input @click="ddmshow = ! ddmshow" id="searchdocs" type="text" placeholder="Search..." aria-label=""
+                                   class="w-full appearance-none placeholder-gray-400 leading-normal py-2 px-3 bg-white rounded text-gray-600 text-sm border border-gray-300 focus:outline-none focus:ring focus:ring-sky-100 focus:border-sky-300">
+                            <ul x-show="ddmshow" class="absolute bg-white rounded border w-full mt-2 shadow h-auto max-h-80 overflow-x-hidden" id="search_result"></ul>
                         </div>
                     </div>
                 </div>
