@@ -39,7 +39,7 @@
     }
   },
   "scripts": {
-    "phpstan": "phpstan",
+    "phpstan": "phpstan --ansi",
     "sitemap": "php bin/sitemap"
   },
   "config": {
