@@ -21,13 +21,10 @@ use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
 class Documentation {
-    /**
-     * @var ?Cache
-     */
     private ?Cache $cache = null;
 
     public function __construct() {
-        if ($this->config('cache')['enable']) {
+        if ($this->config('cache')['disabled'] === false) {
             $this->cache = new Cache($this->config('cache'));
         }
     }
@@ -214,7 +211,7 @@ class Documentation {
     public function cacheData(string $key, mixed $value): mixed {
         $key = strtr($key, ['/' => '-']);
 
-        if ($this->config('cache')['enable'] && $this->cache->isConnected()) {
+        if ($this->config('cache')['disabled'] === false && $this->cache->isConnected()) {
             if ($this->cache->has($key)) {
                 $value = $this->cache->get($key);
             } else {

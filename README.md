@@ -1,6 +1,6 @@
 # PHP Documentation system
 
-Simple but powerful Markdown docs.
+Simple but powerful Markdown documentation.
 
 ![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=RobiNN1.Markdown-Docs)
 

@@ -16,11 +16,6 @@ use RobiNN\Docs\Documentation;
 use RobiNN\Docs\ParseMarkdown;
 
 class DocsController extends Documentation {
-    /**
-     * @param string $path
-     *
-     * @return void
-     */
     public function show(string $path): void {
         if ($this->exists($path)) {
             $this->renderPage($path);
@@ -31,11 +26,6 @@ class DocsController extends Documentation {
         }
     }
 
-    /**
-     * @param string $path
-     *
-     * @return void
-     */
     private function renderPage(string $path): void {
         $md = new ParseMarkdown($path);
 
@@ -51,11 +41,6 @@ class DocsController extends Documentation {
         );
     }
 
-    /**
-     * @param string $path
-     *
-     * @return void
-     */
     private function renderCategory(string $path): void {
         $readme_path = $path.'/README';
         $pages = $this->cacheData(str_replace('/', '-', $readme_path), $this->getPages($readme_path));

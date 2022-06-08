@@ -13,19 +13,10 @@ declare(strict_types=1);
 namespace RobiNN\Docs;
 
 class ParseMarkdown {
-    /**
-     * @var ParsedownExt
-     */
     private ParsedownExt $parsedown;
 
-    /**
-     * @var Documentation
-     */
     private Documentation $docs;
 
-    /**
-     * @var ?string
-     */
     private ?string $text;
 
     public function __construct(?string $text = null) {
@@ -34,20 +25,10 @@ class ParseMarkdown {
         $this->text = is_file($this->getFile($text)) ? file_get_contents($this->getFile($text)) : $text;
     }
 
-    /**
-     * Parse content.
-     *
-     * @return string
-     */
     public function parse(): string {
         return $this->parsedown->text($this->text);
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
     public function getTitle(): string {
         if (empty($this->parsedown->title)) {
             $data = explode("\n", (string) $this->text);
@@ -58,11 +39,6 @@ class ParseMarkdown {
         return $this->parsedown->title;
     }
 
-    /**
-     * Get description.
-     *
-     * @return string
-     */
     public function getDescription(): string {
         $description = strip_tags($this->docs->config('site_description'));
 
@@ -81,22 +57,10 @@ class ParseMarkdown {
         return $description;
     }
 
-    /**
-     * Get headings.
-     *
-     * @return array
-     */
     public function getHeadings(): array {
         return $this->parsedown->headings;
     }
 
-    /**
-     * Get file.
-     *
-     * @param string $path
-     *
-     * @return string
-     */
     private function getFile(string $path): string {
         $path = $this->docs->config('docs_path').trim($path, '/');
 

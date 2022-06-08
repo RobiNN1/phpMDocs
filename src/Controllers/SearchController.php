@@ -16,9 +16,6 @@ use RobiNN\Docs\Documentation;
 use RobiNN\Docs\ParseMarkdown;
 
 class SearchController extends Documentation {
-    /**
-     * @return void
-     */
     public function show(): void {
         $results = [];
         $search_page = filter_input(INPUT_GET, 'page');
@@ -49,9 +46,6 @@ class SearchController extends Documentation {
         echo json_encode($results);
     }
 
-    /**
-     * @return array
-     */
     private function allPages(): array {
         $pages = [];
 

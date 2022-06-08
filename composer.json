@@ -1,6 +1,6 @@
 {
   "name": "robinn/docs",
-  "description": "PHP Documentation system.",
+  "description": "Simple but powerful Markdown documentation.",
   "keywords": [
     "markdown",
     "twig",

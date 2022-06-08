@@ -15,18 +15,12 @@ namespace RobiNN\Docs;
 use Parsedown;
 
 class ParsedownExt extends Parsedown {
-    public function __construct(private readonly Documentation $docs) {
-    }
-
-    /**
-     * @var array
-     */
     public array $headings = [];
 
-    /**
-     * @var string
-     */
     public string $title = '';
+
+    public function __construct(private readonly Documentation $docs) {
+    }
 
     /**
      * Get headings.
