@@ -36,7 +36,9 @@ return [
         'expiration' => 3600, // 1h default
         // Available config options - https://github.com/RobiNN1/Cache#usage
         'storage'    => 'file',
-        'path'       => __DIR__.'/cache/data',
-        'secret_key' => 'docs_cache', // Any random string to secure FileCache
+        'file'       => [
+            'path'   => __DIR__.'/cache/data',
+            'secret' => 'mdocs_cache',
+        ],
     ],
 ];
