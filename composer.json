@@ -23,7 +23,7 @@
     "ext-dom": "*",
     "ext-json": "*",
     "erusev/parsedown": "^1.7",
-    "robinn/cache": "^2.1",
+    "robinn/cache": "^2.2",
     "samdark/sitemap": "^2.4",
     "twig/twig": "^3.4"
   },
