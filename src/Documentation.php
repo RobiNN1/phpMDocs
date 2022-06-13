@@ -39,7 +39,7 @@ class Documentation {
      */
     public function tpl(string $tpl, array $data = []): string {
         try {
-            $loader = new FilesystemLoader(__DIR__.'/../twig');
+            $loader = new FilesystemLoader(__DIR__.'/../templates');
             $twig = new Environment($loader, [
                 'cache' => __DIR__.'/../cache/twig',
                 'debug' => $this->config('twig_debug'),
