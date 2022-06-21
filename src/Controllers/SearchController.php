@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace RobiNN\Docs\Controllers;
 
+use Exception;
 use RobiNN\Docs\Documentation;
 use RobiNN\Docs\ParseMarkdown;
 
@@ -43,7 +44,11 @@ class SearchController extends Documentation {
         }
 
         header('Content-Type: application/json');
-        echo json_encode($results);
+        try {
+            echo json_encode($results, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
     private function allPages(): array {

@@ -269,8 +269,7 @@ class Router {
         if (is_callable($callback)) {
             call_user_func_array($callback, $params);
         } else {
-            echo 'Function is not callable<br>';
-            print_r($callback);
+            echo 'Function is not callable';
         }
     }
 
