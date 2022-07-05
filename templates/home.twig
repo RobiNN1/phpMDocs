@@ -14,7 +14,7 @@
         {% if categories %}
             <div class="grid grid-cols-4 gap-4">
                 {% for cat in categories %}
-                    <a class="block p-10 border text-center text-gray-900 hover:text-gray-600 bg-white hover:bg-gray-100" href="{{ cat.url }}">
+                    <a class="block p-10 shadow-md text-center text-gray-900 hover:text-gray-600 bg-white hover:bg-gray-100" href="{{ cat.url }}">
                         <h4 class="mb-4 text-lg font-bold">{{ cat.title }}</h4>
                         <p>{{ cat.description|raw }}</p>
                     </a>
