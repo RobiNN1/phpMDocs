@@ -21,12 +21,12 @@ namespace RobiNN\Docs;
  */
 class Router {
     /**
-     * @var array The route patterns and their handling functions
+     * @var array<string, mixed> The route patterns and their handling functions
      */
     private array $afterRoutes = [];
 
     /**
-     * @var array The before middleware route patterns and their handling functions
+     * @var array<string, mixed> The before middleware route patterns and their handling functions
      */
     private array $beforeRoutes = [];
 
@@ -77,7 +77,7 @@ class Router {
     /**
      * Get all request headers.
      *
-     * @return array The request headers
+     * @return array<string, mixed> The request headers
      */
     public function getRequestHeaders(): array {
         $headers = [];
@@ -186,9 +186,9 @@ class Router {
      * Replace all curly braces matches {} into word patterns (like Laravel)
      * Checks if there is a routing match.
      *
-     * @param string $pattern
-     * @param string $uri
-     * @param ?array $matches
+     * @param string             $pattern
+     * @param string             $uri
+     * @param ?array<int, mixed> $matches
      *
      * @return bool
      */
@@ -203,8 +203,8 @@ class Router {
     /**
      * Handle a set of routes: if a match is found, execute the related handling function.
      *
-     * @param array $routes       Collection of route patterns and their handling functions
-     * @param bool  $quitAfterRun Does the handle function need to quit after one route was matched?
+     * @param array<string, mixed> $routes       Collection of route patterns and their handling functions
+     * @param bool                 $quitAfterRun Does the handle function need to quit after one route was matched?
      *
      * @return int The number of routes handled
      */
@@ -233,9 +233,9 @@ class Router {
     /**
      * Extract matched url params.
      *
-     * @param array $matches
+     * @param array<int, mixed> $matches
      *
-     * @return array
+     * @return array<mixed, mixed>
      */
     private function extractMatchedUrlParams(array $matches): array {
         // Rework matches to only contain the matches, not the orig string
@@ -256,8 +256,8 @@ class Router {
     }
 
     /**
-     * @param mixed $callback
-     * @param array $params
+     * @param mixed               $callback
+     * @param array<mixed, mixed> $params
      *
      * @return void
      */

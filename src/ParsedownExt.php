@@ -15,6 +15,9 @@ namespace RobiNN\Docs;
 use Parsedown;
 
 class ParsedownExt extends Parsedown {
+    /**
+     * @var array<int, array<string, mixed>>
+     */
     public array $headings = [];
 
     public string $title = '';
@@ -27,7 +30,7 @@ class ParsedownExt extends Parsedown {
      *
      * @param mixed $Line
      *
-     * @return ?array
+     * @return ?array<string, mixed>
      */
     protected function blockHeader(mixed $Line): ?array {
         $block = parent::blockHeader($Line);
@@ -79,7 +82,7 @@ class ParsedownExt extends Parsedown {
      *
      * @param mixed $Excerpt
      *
-     * @return ?array
+     * @return ?array<string, mixed>
      */
     protected function inlineImage(mixed $Excerpt): ?array {
         $inline = parent::inlineImage($Excerpt);
@@ -102,7 +105,7 @@ class ParsedownExt extends Parsedown {
      * @param mixed $Line
      * @param mixed $Block
      *
-     * @return ?array
+     * @return ?array<string, mixed>
      */
     protected function blockTable(mixed $Line, mixed $Block = null): ?array {
         $block = parent::blockTable($Line, $Block);
@@ -119,7 +122,7 @@ class ParsedownExt extends Parsedown {
      *
      * @param mixed $Excerpt
      *
-     * @return ?array
+     * @return ?array<string, mixed>
      */
     protected function inlineLink(mixed $Excerpt): ?array {
         $block = parent::inlineLink($Excerpt);

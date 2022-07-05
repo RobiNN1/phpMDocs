@@ -15,6 +15,7 @@ namespace RobiNN\Docs;
 use DirectoryIterator;
 use Exception;
 use RobiNN\Cache\Cache;
+use RobiNN\Cache\CacheException;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -25,15 +26,19 @@ class Documentation {
 
     public function __construct() {
         if ($this->config('cache')['disabled'] === false) {
-            $this->cache = new Cache($this->config('cache'));
+            try {
+                $this->cache = new Cache($this->config('cache'));
+            } catch (CacheException $e) {
+                echo $e->getMessage();
+            }
         }
     }
 
     /**
      * Render template.
      *
-     * @param string $tpl
-     * @param array  $data
+     * @param string               $tpl
+     * @param array<string, mixed> $data
      *
      * @return string
      */
@@ -112,7 +117,7 @@ class Documentation {
      * @param string $dir
      * @param bool   $remove_md_ext
      *
-     * @return array
+     * @return array<int, string>
      */
     public function scanDir(string $dir, bool $remove_md_ext = true): array {
         $dirs = [];
@@ -146,7 +151,7 @@ class Documentation {
      * @param string $path
      * @param bool   $description
      *
-     * @return array
+     * @return array<int, array<string, string>>
      */
     public function getPages(string $path = '', bool $description = false): array {
         static $pages = [];
@@ -211,7 +216,7 @@ class Documentation {
     public function cacheData(string $key, mixed $value): mixed {
         $key = strtr($key, ['/' => '-']);
 
-        if ($this->config('cache')['disabled'] === false && $this->cache->isConnected()) {
+        if ($this->config('cache')['disabled'] === false && ($this->cache !== null && $this->cache->isConnected())) {
             if ($this->cache->has($key)) {
                 $value = $this->cache->get($key);
             } else {

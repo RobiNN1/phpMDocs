@@ -57,6 +57,11 @@ class ParseMarkdown {
         return $description;
     }
 
+    /**
+     * Get headings.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function getHeadings(): array {
         return $this->parsedown->headings;
     }

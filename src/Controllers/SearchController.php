@@ -51,6 +51,11 @@ class SearchController extends Documentation {
         }
     }
 
+    /**
+     * Get all pages.
+     *
+     * @return array<int, array<string, string>>
+     */
     private function allPages(): array {
         $pages = [];
 
