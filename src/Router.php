@@ -235,7 +235,7 @@ class Router {
      *
      * @param array<int, mixed> $matches
      *
-     * @return array<mixed, mixed>
+     * @return array<int, string|null>
      */
     private function extractMatchedUrlParams(array $matches): array {
         // Rework matches to only contain the matches, not the orig string
@@ -256,8 +256,8 @@ class Router {
     }
 
     /**
-     * @param mixed               $callback
-     * @param array<mixed, mixed> $params
+     * @param mixed                   $callback
+     * @param array<int, string|null> $params
      *
      * @return void
      */
@@ -277,7 +277,8 @@ class Router {
      * Define the current relative URI.
      */
     public function getCurrentUri(): string {
-        // Get the current Request URI and remove a rewrite base path from it (= allows one to run the router in a sub folder)
+        // Get the current Request URI and remove a rewrite base path
+        // from it (= allows one to run the router in a sub folder)
         $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->getBasePath()));
 
         // Don't take query params into account on the URL
