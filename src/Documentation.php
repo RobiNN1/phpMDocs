@@ -22,10 +22,10 @@ use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
 class Documentation {
-    private ?Cache $cache = null;
+    private Cache $cache;
 
     public function __construct() {
-        if ($this->config('cache')['disabled'] === false) {
+        if ($this->config('cache')['enabled']) {
             try {
                 $this->cache = new Cache($this->config('cache'));
             } catch (CacheException $e) {
@@ -216,7 +216,7 @@ class Documentation {
     public function cacheData(string $key, mixed $value): mixed {
         $key = strtr($key, ['/' => '-']);
 
-        if ($this->config('cache')['disabled'] === false && ($this->cache !== null && $this->cache->isConnected())) {
+        if ($this->config('cache')['enabled'] && ($this->cache !== null && $this->cache->isConnected())) {
             if ($this->cache->has($key)) {
                 $value = $this->cache->get($key);
             } else {

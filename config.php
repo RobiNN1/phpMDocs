@@ -30,9 +30,9 @@ return [
         ['link' => '{site_url}', 'title' => 'Home'],
         //['link' => '/page', 'title' => 'Page Title'],
     ],
-    'twig_debug'       => true,
+    'twig_debug'       => false,
     'cache'            => [
-        'disabled'   => true,
+        'enabled'    => true,
         'expiration' => 3600, // 1h default
         // Available config options - https://github.com/RobiNN1/Cache#usage
         'storage'    => 'file',
