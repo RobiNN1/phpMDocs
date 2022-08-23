@@ -1,14 +1,14 @@
 {
   "name": "robinn/docs",
   "description": "Simple but powerful Markdown documentation.",
+  "license": "MIT",
+  "type": "project",
   "keywords": [
     "markdown",
     "twig",
     "php",
     "bootstrap"
   ],
-  "license": "MIT",
-  "type": "project",
   "authors": [
     {
       "name": "Róbert Kelčák",
@@ -16,8 +16,6 @@
       "homepage": "https://kelcak.com"
     }
   ],
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "require": {
     "php": ">=8.1",
     "ext-dom": "*",
@@ -27,22 +25,24 @@
     "samdark/sitemap": "^2.4",
     "twig/twig": "^3.4"
   },
-  "suggest": {
-    "ext-iconv": "Optional for createIdFromTitle() method."
-  },
   "require-dev": {
     "phpstan/phpstan": "^1.8"
   },
+  "suggest": {
+    "ext-iconv": "Optional for createIdFromTitle() method."
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "RobiNN\\Docs\\": "src/"
     }
   },
+  "config": {
+    "sort-packages": true
+  },
   "scripts": {
     "phpstan": "phpstan --ansi",
     "sitemap": "php bin/sitemap"
-  },
-  "config": {
-    "sort-packages": true
   }
 }
