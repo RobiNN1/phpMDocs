@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace RobiNN\Docs\Controllers;
 
-use Exception;
+use JsonException;
 use RobiNN\Docs\Documentation;
 use RobiNN\Docs\ParseMarkdown;
 
@@ -46,7 +46,7 @@ class SearchController extends Documentation {
         header('Content-Type: application/json');
         try {
             echo json_encode($results, JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
+        } catch (JsonException $e) {
             echo $e->getMessage();
         }
     }
