@@ -7,6 +7,14 @@ module.exports = {
     theme: {
         extend: {},
     },
+    corePlugins: {
+        textOpacity: false,
+        backgroundOpacity: false,
+        borderOpacity: false,
+        divideOpacity: false,
+        placeholderOpacity: false,
+        ringOpacity: false,
+    },
     plugins: [],
     safelist: [
         'table-auto',
