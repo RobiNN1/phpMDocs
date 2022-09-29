@@ -21,7 +21,7 @@ class SearchController extends Documentation {
         $results = [];
         $search_page = filter_input(INPUT_GET, 'page');
 
-        if (!empty($search_page)) {
+        if ($search_page !== null && $search_page !== '') {
             foreach ($this->allPages() as $page) {
                 foreach (explode(' ', $search_page) as $word) {
                     if (stripos($page['title'], $word) !== false) {
@@ -39,7 +39,7 @@ class SearchController extends Documentation {
         $temp_arr = array_unique(array_column($results, 'link'));
         $results = array_values(array_intersect_key($results, $temp_arr));
 
-        if (empty($results)) {
+        if (count($results) === 0) {
             $results['status'] = 'We didn\'t find any results!';
         }
 
@@ -74,7 +74,7 @@ class SearchController extends Documentation {
                     'link'  => $this->config('site_url').$file,
                 ];
 
-                if (!empty($headings)) {
+                if (count($headings) > 0) {
                     foreach ($headings as $heading) {
                         $pages[] = [
                             'page'  => $page_title,

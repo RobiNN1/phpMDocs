@@ -90,7 +90,7 @@ class Documentation {
         $count = substr_count($this->currentPath(), '/');
         $docs_path = str_repeat('../', $count);
 
-        return !empty($path) ? $docs_path.$path : $docs_path;
+        return $path !== '' ? $docs_path.$path : $docs_path;
     }
 
     /**
@@ -216,7 +216,7 @@ class Documentation {
     public function cacheData(string $key, mixed $value): mixed {
         $key = strtr($key, ['/' => '-']);
 
-        if ($this->config('cache')['enabled'] && ($this->cache !== null && $this->cache->isConnected())) {
+        if ($this->config('cache')['enabled'] && $this->cache->isConnected()) {
             if ($this->cache->has($key)) {
                 $value = $this->cache->get($key);
             } else {

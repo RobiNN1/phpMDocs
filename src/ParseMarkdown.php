@@ -30,7 +30,7 @@ class ParseMarkdown {
     }
 
     public function getTitle(): string {
-        if (empty($this->parsedown->title)) {
+        if ($this->parsedown->title === '') {
             $data = explode("\n", (string) $this->text);
 
             return array_reverse(explode('# ', $data[0], 2))[0];
@@ -44,7 +44,7 @@ class ParseMarkdown {
 
         $data = explode("\n", (string) $this->text);
 
-        if (!empty($data[2])) {
+        if (isset($data[2])) {
             $description = strip_tags($data[2]);
             $max_length = 158; // Recommended maximum for description size
 
