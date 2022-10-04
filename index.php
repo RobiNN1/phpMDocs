@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -12,15 +12,21 @@ declare(strict_types=1);
 
 require_once __DIR__.'/vendor/autoload.php';
 
-$router = new RobiNN\Docs\Router();
+$router = new RobiNN\Pmd\Router();
 
-$docs = new RobiNN\Docs\Documentation();
+$docs = new RobiNN\Pmd\Documentation();
 
 $router->set404([$docs, 'show404']);
 $router->setBasePath($docs->config('site_path'));
 
-$router->get('/', RobiNN\Docs\Controllers\HomepageController::class);
-$router->get('search', RobiNN\Docs\Controllers\SearchController::class);
-$router->get('(.*)', RobiNN\Docs\Controllers\DocsController::class); // It must be at the end
+/**
+ * @uses \RobiNN\Pmd\Controllers\HomepageController::show()
+ * @uses \RobiNN\Pmd\Controllers\SearchController::show()
+ * @uses \RobiNN\Pmd\Controllers\DocsController::show()
+ */
+
+$router->get('/', RobiNN\Pmd\Controllers\HomepageController::class);
+$router->get('search', RobiNN\Pmd\Controllers\SearchController::class);
+$router->get('(.*)', RobiNN\Pmd\Controllers\DocsController::class); // It must be at the end
 
 $router->run();

@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace RobiNN\Docs;
+namespace RobiNN\Pmd;
 
 use Parsedown;
 
@@ -88,11 +88,21 @@ class ParsedownExt extends Parsedown {
         $inline = parent::inlineImage($Excerpt);
 
         if (isset($inline)) {
-            $path = $this->docs->config('docs_path').str_replace('../', '', $inline['element']['attributes']['src']);
-            $image_type = pathinfo($path, PATHINFO_EXTENSION);
-            $img_data = file_get_contents($path);
+            if (!str_starts_with($inline['element']['attributes']['src'], 'http')) {
+                $path = $this->docs->config('docs_path').'/'.str_replace('../', '', $inline['element']['attributes']['src']);
+                $path = realpath($path);
 
-            $inline['element']['attributes']['src'] = 'data:image/'.$image_type.';base64,'.base64_encode($img_data);
+                if (is_file($path)) {
+                    $image_type = pathinfo($path, PATHINFO_EXTENSION);
+                    $img_data = base64_encode(file_get_contents($path));
+                } else {
+                    $image_type = 'n\a';
+                    $img_data = 'n\a';
+                }
+
+                $inline['element']['attributes']['src'] = 'data:image/'.$image_type.';base64,'.$img_data;
+            }
+
             $inline['element']['attributes']['class'] = 'max-w-full h-auto';
         }
 

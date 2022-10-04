@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use RobiNN\Docs\Documentation;
+use RobiNN\Pmd\Documentation;
 use samdark\sitemap\Sitemap;
 
 $_SERVER['SERVER_NAME'] = '';
-$docs = new Documentation;
+$docs = new Documentation();
 
 $sitemap = new Sitemap(__DIR__.'/../sitemap.xml');
 $sitemap->addItem($docs->config('site_url_sitemap'), time(), Sitemap::MONTHLY, '1.0');

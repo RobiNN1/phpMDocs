@@ -1,5 +1,5 @@
 {
-  "name": "robinn/docs",
+  "name": "robinn/phpmdocs",
   "description": "Simple but powerful Markdown documentation.",
   "license": "MIT",
   "type": "project",
@@ -21,7 +21,7 @@
     "ext-dom": "*",
     "ext-json": "*",
     "erusev/parsedown": "^1.7",
-    "robinn/cache": "^2.2",
+    "robinn/cache": "^2.3",
     "samdark/sitemap": "^2.4",
     "twig/twig": "^3.4"
   },
@@ -35,7 +35,7 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "RobiNN\\Docs\\": "src/"
+      "RobiNN\\Pmd\\": "src/"
     }
   },
   "config": {

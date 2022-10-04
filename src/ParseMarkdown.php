@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace RobiNN\Docs;
+namespace RobiNN\Pmd;
 
 class ParseMarkdown {
     private ParsedownExt $parsedown;
@@ -67,7 +67,7 @@ class ParseMarkdown {
     }
 
     private function getFile(string $path): string {
-        $path = $this->docs->config('docs_path').trim($path, '/');
+        $path = $this->docs->config('docs_path').'/'.trim($path, '/');
 
         return is_file($path.'.md') ? $path.'.md' : $path.'/README.md';
     }

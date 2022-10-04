@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="text-center my-12">
-        <h1>{{ config('site_title') }}</h1>
+        <h1 class="text-4xl">{{ config('site_title') }}</h1>
         {% if config('site_description') %}
             <p class="text-lg font-light">{{ config('site_description')|raw }}</p>
         {% endif %}
@@ -12,9 +12,9 @@
 
     <div class="container lg:max-w-7xl mx-auto px-4">
         {% if categories %}
-            <div class="grid grid-cols-4 gap-4">
+            <div class="md:grid md:grid-cols-3 md:gap-4 lg:grid-cols-4">
                 {% for cat in categories %}
-                    <a class="block p-10 shadow-md text-center text-gray-900 hover:text-gray-600 bg-white hover:bg-gray-100" href="{{ cat.url }}">
+                    <a class="block p-10 text-center text-gray-900 hover:text-gray-600 hover:bg-gray-100 rounded bg-white shadow-sm shadow-gray-300" href="{{ cat.url }}">
                         <h4 class="mb-4 text-lg font-bold">{{ cat.title }}</h4>
                         <p>{{ cat.description|raw }}</p>
                     </a>

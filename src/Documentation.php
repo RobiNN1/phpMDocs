@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace RobiNN\Docs;
+namespace RobiNN\Pmd;
 
 use DirectoryIterator;
 use Exception;
@@ -35,6 +35,25 @@ class Documentation {
     }
 
     /**
+     * Get config.
+     *
+     * @param string $key
+     *
+     * @return array<int|string, mixed>|bool|int|string|null
+     */
+    public function config(string $key): array|bool|int|string|null {
+        if (is_file(__DIR__.'/../config.php')) {
+            $config = (array) require __DIR__.'/../config.php';
+        } else {
+            exit('The configuration file is missing.');
+        }
+
+        $config['site_url'] .= $config['site_path'];
+
+        return $config[$key] ?? null;
+    }
+
+    /**
      * Render template.
      *
      * @param string               $tpl
@@ -43,21 +62,22 @@ class Documentation {
      * @return string
      */
     public function tpl(string $tpl, array $data = []): string {
+        $loader = new FilesystemLoader(__DIR__.'/../templates');
+
+        $twig = new Environment($loader, [
+            'cache' => __DIR__.'/../cache/twig',
+            'debug' => $this->config('twig_debug'),
+        ]);
+
+        if ($this->config('twig_debug')) {
+            $twig->addExtension(new DebugExtension());
+        }
+
+        $twig->addFunction(new TwigFunction('config', [$this, 'config']));
+        $twig->addFunction(new TwigFunction('path', [$this, 'path']));
+        $twig->addFunction(new TwigFunction('is_active', [$this, 'isActive']));
+
         try {
-            $loader = new FilesystemLoader(__DIR__.'/../templates');
-            $twig = new Environment($loader, [
-                'cache' => __DIR__.'/../cache/twig',
-                'debug' => $this->config('twig_debug'),
-            ]);
-
-            if ($this->config('twig_debug')) {
-                $twig->addExtension(new DebugExtension());
-            }
-
-            $twig->addFunction(new TwigFunction('config', [$this, 'config']));
-            $twig->addFunction(new TwigFunction('path', [$this, 'path']));
-            $twig->addFunction(new TwigFunction('is_active', [$this, 'isActive']));
-
             return $twig->render($tpl.'.twig', $data);
         } catch (Exception $e) {
             return $e->getMessage().' in '.$e->getFile().' at line: '.$e->getLine();
@@ -158,8 +178,8 @@ class Documentation {
 
         $path = $this->getCategory($path);
 
-        if (is_dir($this->config('docs_path').$path)) {
-            $dir = new DirectoryIterator($this->config('docs_path').$path);
+        if (is_dir($this->config('docs_path').'/'.$path)) {
+            $dir = new DirectoryIterator($this->config('docs_path').'/'.$path);
 
             foreach ($dir as $file) {
                 if (!$file->isDot() && !in_array($file->getFilename(), $this->config('ignore_files'), true)) {
@@ -192,7 +212,7 @@ class Documentation {
      * @return bool
      */
     public function exists(string $path): bool {
-        return is_file($this->config('docs_path').$path.'.md');
+        return is_file($this->config('docs_path').'/'.$path.'.md');
     }
 
     /**
@@ -245,19 +265,19 @@ class Documentation {
     }
 
     /**
-     * Get Docs config.
+     * Order an array by another array.
      *
-     * @param ?string $key
+     * It uses an array from the config
      *
-     * @return mixed
+     * @param array<string, mixed> $array
+     * @param string               $key
+     *
+     * @return array<string, mixed>
      */
-    public function config(?string $key = null): mixed {
-        static $config = [];
+    public function orderByArray(array &$array, string $key): array {
+        $order = $this->config('reorder_items')[$key];
+        $array = array_replace(array_flip($order), $array);
 
-        $config = (array) require __DIR__.'/../config.php';
-
-        $config['site_url'] .= $config['site_path'];
-
-        return $config[$key] ?? null;
+        return $array;
     }
 }

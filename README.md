@@ -1,8 +1,8 @@
-# PHP Documentation system
+# phpMDocs
 
 Simple but powerful Markdown documentation.
 
-![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=RobiNN1.Markdown-Docs)
+![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=RobiNN1.phpMDocs)
 
 ## Features
 

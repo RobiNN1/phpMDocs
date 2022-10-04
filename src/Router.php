@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -10,54 +10,50 @@
 
 declare(strict_types=1);
 
-namespace RobiNN\Docs;
+namespace RobiNN\Pmd;
 
 /**
- * @author    Bram(us) Van Damme <bramus@bram.us>
- * @copyright Copyright (c), 2013 Bram(us) Van Damme
- * @license   MIT public license
- *
- * @link      https://github.com/bramus/router
+ * Original code by Bram(us) Van Damme <bramus@bram.us> https://github.com/bramus/router - MIT
  */
 class Router {
     /**
-     * @var array<string, mixed> The route patterns and their handling functions
+     * @var array<string, mixed> The route patterns and their handling functions.
      */
-    private array $afterRoutes = [];
+    private array $after_routes = [];
 
     /**
-     * @var array<string, mixed> The before middleware route patterns and their handling functions
+     * @var array<string, mixed> The before middleware route patterns and their handling functions.
      */
-    private array $beforeRoutes = [];
+    private array $before_routes = [];
 
     /**
-     * @var callable The function to be executed when no route has been matched
+     * @var callable The function to be executed when no route has been matched.
      */
-    protected $notFoundCallback;
+    protected $not_found_callback;
 
     /**
-     * @var string Current base route, used for (sub)route mounting
+     * @var string Current base route, used for (sub)route mounting.
      */
-    private string $baseRoute = '';
+    private string $base_route = '';
 
     /**
-     * @var string The Server Base Path for Router Execution
+     * @var string The Server Base Path for Router Execution.
      */
-    private string $serverBasePath = '';
+    private string $server_base_path = '';
 
     /**
      * Store a route and a handling function to be executed when accessed using one of the specified methods.
      *
-     * @param string $methods  Allowed methods, | delimited
-     * @param string $pattern  A route pattern such as /about/system
-     * @param mixed  $callback Callback
+     * @param string $methods Allowed methods, | delimited.
+     * @param string $pattern A route pattern such as /about/system.
+     * @param mixed  $callback
      */
     public function match(string $methods, string $pattern, mixed $callback): void {
-        $pattern = $this->baseRoute.'/'.trim($pattern, '/');
-        $pattern = $this->baseRoute ? rtrim($pattern, '/') : $pattern;
+        $pattern = $this->base_route.'/'.trim($pattern, '/');
+        $pattern = $this->base_route ? rtrim($pattern, '/') : $pattern;
 
         foreach (explode('|', $methods) as $method) {
-            $this->afterRoutes[$method][] = [
+            $this->after_routes[$method][] = [
                 'pattern' => $pattern,
                 'fn'      => $callback,
             ];
@@ -67,8 +63,8 @@ class Router {
     /**
      * Shorthand for a route accessed using GET.
      *
-     * @param string $pattern  A route pattern such as /about/system
-     * @param mixed  $callback Callback
+     * @param string $pattern A route pattern such as /about/system.
+     * @param mixed  $callback
      */
     public function get(string $pattern, mixed $callback): void {
         $this->match('GET', $pattern, $callback);
@@ -77,7 +73,7 @@ class Router {
     /**
      * Get all request headers.
      *
-     * @return array<string, mixed> The request headers
+     * @return array<string, mixed>
      */
     public function getRequestHeaders(): array {
         $headers = [];
@@ -101,7 +97,7 @@ class Router {
     /**
      * Get the request method used, taking overrides into account.
      *
-     * @return string The Request method to handle
+     * @return string
      */
     public function getRequestMethod(): string {
         // Take the method as found in $_SERVER
@@ -126,25 +122,25 @@ class Router {
     /**
      * Execute the router: Loop all defined before middleware's and routes, and execute the handling function if a match was found.
      *
-     * @param ?callable $callback Function to be executed after a matching route was handled (= after router middleware)
+     * @param ?callable $callback Function to be executed after a matching route was handled (= after router middleware).
      */
     public function run(?callable $callback = null): bool {
         // Define which method we need to handle
-        $requestedMethod = $this->getRequestMethod();
+        $requested_method = $this->getRequestMethod();
 
         // Handle all before middlewares
-        if (isset($this->beforeRoutes[$requestedMethod])) {
-            $this->handle($this->beforeRoutes[$requestedMethod]);
+        if (isset($this->before_routes[$requested_method])) {
+            $this->handle($this->before_routes[$requested_method]);
         }
 
         // Handle all routes
-        $numHandled = 0;
-        if (isset($this->afterRoutes[$requestedMethod])) {
-            $numHandled = $this->handle($this->afterRoutes[$requestedMethod], true);
+        $num_handled = 0;
+        if (isset($this->after_routes[$requested_method])) {
+            $num_handled = $this->handle($this->after_routes[$requested_method], true);
         }
 
         // If no route was handled, trigger the 404 (if any)
-        if ($numHandled === 0) {
+        if ($num_handled === 0) {
             $this->trigger404();
         } // If a route was handled, perform the finish callback (if any)
         elseif ($callback && is_callable($callback)) {
@@ -157,16 +153,16 @@ class Router {
         }
 
         // Return true if a route was handled, false otherwise
-        return $numHandled !== 0;
+        return $num_handled !== 0;
     }
 
     /**
      * Set the 404 handling function.
      *
-     * @param mixed $callback The function to be executed
+     * @param mixed $callback
      */
     public function set404(mixed $callback): void {
-        $this->notFoundCallback = $callback;
+        $this->not_found_callback = $callback;
     }
 
     /**
@@ -177,13 +173,13 @@ class Router {
     public function trigger404(): void {
         header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
 
-        if (is_callable($this->notFoundCallback)) {
-            $this->invoke($this->notFoundCallback);
+        if (is_callable($this->not_found_callback)) {
+            $this->invoke($this->not_found_callback);
         }
     }
 
     /**
-     * Replace all curly braces matches {} into word patterns (like Laravel)
+     * Replace all curly braces matches {} into word patterns (like Laravel).
      * Checks if there is a routing match.
      *
      * @param string             $pattern
@@ -203,13 +199,13 @@ class Router {
     /**
      * Handle a set of routes: if a match is found, execute the related handling function.
      *
-     * @param array<string, mixed> $routes       Collection of route patterns and their handling functions
-     * @param bool                 $quitAfterRun Does the handle function need to quit after one route was matched?
+     * @param array<string, mixed> $routes         Collection of route patterns and their handling functions
+     * @param bool                 $quit_after_run Does the handle function need to quit after one route was matched?
      *
      * @return int The number of routes handled
      */
-    private function handle(array $routes, bool $quitAfterRun = false): int {
-        $numHandled = 0; // Counter to keep track of the number of routes we've handled
+    private function handle(array $routes, bool $quit_after_run = false): int {
+        $num_handled = 0; // Counter to keep track of the number of routes we've handled
 
         foreach ($routes as $route) {
             // is there a valid match?
@@ -217,17 +213,17 @@ class Router {
                 // Call the handling function with the URL parameters if the desired input is callable
                 $this->invoke($route['fn'], $this->extractMatchedUrlParams($matches));
 
-                $numHandled++;
+                $num_handled++;
 
                 // If we need to quit, then quit
-                if ($quitAfterRun) {
+                if ($quit_after_run) {
                     break;
                 }
             }
         }
 
         // Return the number of routes handled
-        return $numHandled;
+        return $num_handled;
     }
 
     /**
@@ -286,15 +282,14 @@ class Router {
             $uri = substr($uri, 0, strpos($uri, '?'));
         }
 
-        // Remove trailing slash + enforce a slash at the start
-        return '/'.trim($uri, '/');
+        return '/'.trim($uri, '/');// Remove trailing slash + enforce a slash at the start
     }
 
     /**
      * Return server base Path, and define it if isn't defined.
      */
     public function getBasePath(): string {
-        return $this->serverBasePath;
+        return $this->server_base_path;
     }
 
     /**
@@ -302,9 +297,9 @@ class Router {
      *
      * @see https://github.com/bramus/router/issues/82#issuecomment-466956078
      *
-     * @param string $serverBasePath
+     * @param string $base_path
      */
-    public function setBasePath(string $serverBasePath): void {
-        $this->serverBasePath = $serverBasePath;
+    public function setBasePath(string $base_path): void {
+        $this->server_base_path = $base_path;
     }
 }

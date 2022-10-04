@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -10,17 +10,21 @@
 
 declare(strict_types=1);
 
-namespace RobiNN\Docs\Controllers;
+namespace RobiNN\Pmd\Controllers;
 
-use RobiNN\Docs\Documentation;
-use RobiNN\Docs\ParseMarkdown;
+use RobiNN\Pmd\Documentation;
+use RobiNN\Pmd\ParseMarkdown;
 
 class DocsController extends Documentation {
     public function show(string $path): void {
         if ($this->exists($path)) {
             $this->renderPage($path);
         } elseif ($this->exists($path.'/README')) {
-            $this->renderCategory($path);
+            if ($this->config('category_page')) {
+                $this->renderCategory($path);
+            } else {
+                $this->redirectToPage($path);
+            }
         } else {
             $this->show404();
         }
@@ -53,5 +57,15 @@ class DocsController extends Documentation {
             'content'     => $md->parse(),
             'columns'     => array_chunk($pages, (int) ceil(count($pages) / 3)),
         ]);
+    }
+
+    private function redirectToPage(string $path): void {
+        $location = $this->getPages($path)[0]['url'];
+
+        if (!headers_sent()) {
+            header('Location: '.$location);
+        } else {
+            echo '<script data-cfasync="false">window.location.replace("'.$location.'");</script>';
+        }
     }
 }

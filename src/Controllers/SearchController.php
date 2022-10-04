@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Docs.
+ * This file is part of phpMDocs.
  *
  * Copyright (c) Róbert Kelčák (https://kelcak.com/)
  *
@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace RobiNN\Docs\Controllers;
+namespace RobiNN\Pmd\Controllers;
 
 use JsonException;
-use RobiNN\Docs\Documentation;
-use RobiNN\Docs\ParseMarkdown;
+use RobiNN\Pmd\Documentation;
+use RobiNN\Pmd\ParseMarkdown;
 
 class SearchController extends Documentation {
     public function show(): void {
