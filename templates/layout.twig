@@ -40,7 +40,7 @@
                         <div class="sm:ml-2 relative" x-data="{ ddmshow: false }" @click.away="ddmshow = false">
                             <input @click="ddmshow = ! ddmshow" id="searchdocs" type="text" placeholder="Search..." aria-label=""
                                    class="w-full appearance-none placeholder-gray-400 leading-normal py-2 px-3 bg-white rounded text-gray-600 text-sm border border-gray-300 focus:outline-none focus:ring focus:ring-sky-100 focus:border-sky-300">
-                            <ul x-show="ddmshow" class="absolute bg-white rounded border w-full mt-2 shadow h-auto max-h-80 overflow-x-hidden" id="search_result"></ul>
+                            <ul x-show="ddmshow" class="absolute bg-white rounded border min-w-full mt-2 shadow h-auto max-h-80 overflow-x-hidden right-0 left-auto" id="search_result"></ul>
                         </div>
                     </div>
                 </div>

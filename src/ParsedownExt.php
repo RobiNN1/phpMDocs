@@ -139,7 +139,10 @@ class ParsedownExt extends Parsedown {
 
         if (isset($block)) {
             $href = $block['element']['attributes']['href'];
-            $block['element']['attributes']['href'] = str_ends_with($href, '.md') ? str_replace('.md', '', $href) : $href;
+
+            if (!str_starts_with($href, 'http')) {
+                $block['element']['attributes']['href'] = str_ends_with($href, '.md') ? str_replace('.md', '', $href) : $href;
+            }
         }
 
         return $block;

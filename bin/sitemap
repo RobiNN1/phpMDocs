@@ -37,7 +37,7 @@ Disallow: /assets/
 Disallow: /cache/
 Disallow: /docs/
 Disallow: /src/
-Disallow: /twig/
+Disallow: /templates/
 Disallow: /vendor/
 
 Sitemap: '.$docs->config('site_url_sitemap').'/sitemap.xml

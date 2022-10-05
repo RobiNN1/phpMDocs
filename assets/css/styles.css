@@ -655,6 +655,14 @@ blockquote {
   position: relative;
 }
 
+.right-0 {
+  right: 0px;
+}
+
+.left-auto {
+  left: auto;
+}
+
 .col-span-12 {
   grid-column: span 12 / span 12;
 }
@@ -715,6 +723,10 @@ blockquote {
 
 .w-full {
   width: 100%;
+}
+
+.min-w-full {
+  min-width: 100%;
 }
 
 .max-w-full {
@@ -875,16 +887,16 @@ blockquote {
   line-height: 1.25rem;
 }
 
-.font-bold {
-  font-weight: 700;
-}
-
 .font-normal {
   font-weight: 400;
 }
 
 .font-light {
   font-weight: 300;
+}
+
+.font-bold {
+  font-weight: 700;
 }
 
 .leading-normal {

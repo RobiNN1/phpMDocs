@@ -40,10 +40,7 @@ class DocsController extends Documentation {
         $toc = $this->cacheData('toc-'.$path, $md->getHeadings());
         $all_pages = $this->getPages($path); // pages in category - left sidebar
 
-        echo $this->tpl(
-            'page',
-            compact('title', 'description', 'content', 'toc', 'all_pages')
-        );
+        echo $this->tpl('page', compact('title', 'description', 'content', 'toc', 'all_pages'));
     }
 
     private function renderCategory(string $path): void {

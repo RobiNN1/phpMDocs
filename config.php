@@ -36,7 +36,7 @@ return [
     'category_page'    => false, // Set true to show category with all pages in that category
     'reorder_items'    => [
         // e.g. ['page', 'category', 'page2'] - items will be displayed in this order,
-        // pages that are not listed will not be displayed (homepage only). If is empty nothing will change.
+        // pages that are not listed will not be displayed (homepage only), if is empty nothing will change.
         'home' => [],
     ],
     'twig_debug'       => false,
