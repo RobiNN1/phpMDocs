@@ -22,8 +22,7 @@ return [
     'site_url'         => 'http'.($is_https ? 's' : '').'://'.$_SERVER['SERVER_NAME'], // If that doesn't work, it may be replaced with the actual URL
     'site_url_sitemap' => 'https://example.com', // For sitemap generator
     'keywords'         => ['docs', 'php', 'markdown'],
-    //'docs_path'        => __DIR__.'/docs', // Path to dir with documentation
-    'docs_path'        => __DIR__.'/../uikit/docs',
+    'docs_path'        => __DIR__.'/docs', // Path to dir with documentation
     'ignore_files'     => [
         // List of ignored files and dirs in docs dir. If empty, these files will appear in the search results
         '.gitattributes', '.gitignore', 'LICENSE', 'README.md',
@@ -45,9 +44,6 @@ return [
         'expiration' => 3600, // 1h default
         // Available config options - https://github.com/RobiNN1/Cache#usage
         'storage'    => 'file',
-        'file'       => [
-            'path'   => __DIR__.'/cache/data',
-            'secret' => 'mdocs_cache',
-        ],
+        'file'       => ['path' => __DIR__.'/cache/data', 'secret' => 'phpmdocs_cache'],
     ],
 ];

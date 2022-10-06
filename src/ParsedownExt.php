@@ -67,9 +67,6 @@ class ParsedownExt extends Parsedown {
      */
     public function createIdFromTitle(string $title): string {
         $title = preg_replace('~[^\pL\d]+~u', '-', $title);
-        if (function_exists('iconv')) {
-            $title = iconv('utf-8', 'us-ascii//TRANSLIT', $title);
-        }
         $title = preg_replace('~[^-\w]+~', '', $title);
         $title = trim($title, '-');
         $title = preg_replace('~-+~', '-', $title);
@@ -128,7 +125,7 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Remove .md from links.
+     * Remove .md from relative paths.
      *
      * @param mixed $Excerpt
      *
@@ -143,6 +140,32 @@ class ParsedownExt extends Parsedown {
             if (!str_starts_with($href, 'http')) {
                 $block['element']['attributes']['href'] = str_ends_with($href, '.md') ? str_replace('.md', '', $href) : $href;
             }
+        }
+
+        return $block;
+    }
+
+    /**
+     * Add custom class to the code blocks.
+     *
+     * ```php {.custom-class}
+     * // code
+     * ```
+     * It will add .custom-class to the <pre> tag.
+     * Only 1 class can be added.
+     *
+     * @param mixed $Line
+     *
+     * @return ?array<string, mixed>
+     */
+    protected function blockFencedCode(mixed $Line): ?array {
+        $block = parent::blockFencedCode($Line);
+
+        if (isset($block) && str_contains($Line['text'], '{') && str_ends_with($Line['text'], '}')) {
+            $parts = explode('{', $Line['text'], 2);
+            $Line['text'] = trim($parts[0]);
+
+            $block['element']['attributes']['class'] = trim($parts[1], '.}');
         }
 
         return $block;

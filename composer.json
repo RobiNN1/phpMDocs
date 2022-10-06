@@ -28,9 +28,6 @@
   "require-dev": {
     "phpstan/phpstan": "^1.8"
   },
-  "suggest": {
-    "ext-iconv": "Optional for createIdFromTitle() method."
-  },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "autoload": {
