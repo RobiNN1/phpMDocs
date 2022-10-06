@@ -18,6 +18,7 @@
   ],
   "require": {
     "php": ">=8.1",
+    "ext-json": "*",
     "erusev/parsedown": "^1.7",
     "robinn/cache": "^2.3",
     "samdark/sitemap": "^2.4",
