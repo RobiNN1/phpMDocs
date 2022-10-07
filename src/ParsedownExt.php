@@ -139,6 +139,8 @@ class ParsedownExt extends Parsedown {
 
             if (!str_starts_with($href, 'http')) {
                 $block['element']['attributes']['href'] = str_ends_with($href, '.md') ? str_replace('.md', '', $href) : $href;
+            } else {
+                $block['element']['attributes']['target'] = '_blank';
             }
         }
 
