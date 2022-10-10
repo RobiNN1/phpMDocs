@@ -237,7 +237,7 @@ class Documentation {
         $key = strtr($key, ['/' => '-']);
 
         if ($this->config('cache')['enabled'] && $this->cache->isConnected()) {
-            if ($this->cache->has($key)) {
+            if ($this->cache->exists($key)) {
                 $value = $this->cache->get($key);
             } else {
                 $this->cache->set($key, $value, $this->config('cache')['expiration']);
