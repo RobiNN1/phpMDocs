@@ -34,10 +34,10 @@ class DocsController extends Documentation {
         $md = new ParseMarkdown($path);
 
         // bugfix, content must first be parsed in order to use headings
-        $content = $this->cacheData('html-'.$path, $md->parse());
+        $content = $this->cacheData('html_'.$path, $md->parse());
         $title = $md->getTitle();
         $description = $md->getDescription();
-        $toc = $this->cacheData('toc-'.$path, $md->getHeadings());
+        $toc = $this->cacheData('toc_'.$path, $md->getHeadings());
         $all_pages = $this->getPages($path); // pages in category - left sidebar
 
         echo $this->tpl('page', compact('title', 'description', 'content', 'toc', 'all_pages'));
@@ -45,7 +45,7 @@ class DocsController extends Documentation {
 
     private function renderCategory(string $path): void {
         $readme_path = $path.'/README';
-        $pages = $this->cacheData(str_replace('/', '-', $readme_path), $this->getPages($readme_path));
+        $pages = $this->cacheData(str_replace('/', '_', $readme_path), $this->getPages($readme_path));
         $md = new ParseMarkdown($readme_path);
 
         echo $this->tpl('category', [

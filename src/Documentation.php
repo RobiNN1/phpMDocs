@@ -234,7 +234,7 @@ class Documentation {
      * @return mixed
      */
     public function cacheData(string $key, mixed $value): mixed {
-        $key = strtr($key, ['/' => '-']);
+        $key = strtr($key, ['/' => '_']);
 
         if ($this->config('cache')['enabled'] && $this->cache->isConnected()) {
             if ($this->cache->exists($key)) {
