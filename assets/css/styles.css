@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.1.8 | MIT License | https://tailwindcss.com
+! tailwindcss v3.2.0 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -410,11 +410,17 @@ video {
   height: auto;
 }
 
-h1,  h2,  h3,  h4,  h5,  h6 {
+/* Make elements with the HTML hidden attribute stay hidden by default */
+
+[hidden] {
+  display: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.5rem;
 }
 
-h1 > a,  h2 > a,  h3 > a,  h4 > a,  h5 > a,  h6 > a {
+h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
   font-weight: 500;
   color: #111827;
 }
