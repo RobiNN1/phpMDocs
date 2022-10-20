@@ -135,34 +135,31 @@ class Documentation {
      * Get recursively all files and dirs.
      *
      * @param string $dir
-     * @param bool   $remove_md_ext
      *
      * @return array<int, string>
      */
-    public function scanDir(string $dir, bool $remove_md_ext = true): array {
+    public function scanDir(string $dir): array {
         $dirs = [];
 
         foreach (scandir($dir) as $filename) {
-            if ($filename[0] === '.') {
+            if ($filename[0] === '.' || in_array($filename, $this->config('ignore_files'), true)) {
                 continue;
             }
 
-            if (!in_array($filename, $this->config('ignore_files'), true)) {
-                $file_path = $dir.'/'.$filename;
+            $file_path = $dir.'/'.$filename;
 
-                if (is_dir($file_path)) {
-                    foreach ($this->scanDir($file_path) as $child_filename) {
-                        $dirs[] = $filename.'/'.$child_filename;
-                    }
+            if (is_dir($file_path)) {
+                foreach ($this->scanDir($file_path) as $child_filename) {
+                    $dirs[] = $filename.'/'.$child_filename;
                 }
-                $dirs[] = $filename;
             }
+
+            $dirs[] = $filename;
         }
 
         natsort($dirs);
-        $dirs = array_values($dirs);
 
-        return $remove_md_ext ? array_map(static fn ($name) => strtr($name, ['.md' => '']), $dirs) : $dirs;
+        return array_map(static fn ($name) => strtr($name, ['.md' => '']), $dirs);
     }
 
     /**
