@@ -7,6 +7,13 @@ module.exports = {
     theme: {
         extend: {},
     },
+    safelist: [
+        'table-auto',
+        'w-full',
+        'max-w-full',
+        'h-auto',
+        'text-left',
+    ],
     corePlugins: {
         textOpacity: false,
         backgroundOpacity: false,
@@ -16,11 +23,7 @@ module.exports = {
         ringOpacity: false,
     },
     plugins: [],
-    safelist: [
-        'table-auto',
-        'w-full',
-        'max-w-full',
-        'h-auto',
-        'text-left',
-    ],
+    experimental: {
+        optimizeUniversalDefaults: true
+    }
 }
