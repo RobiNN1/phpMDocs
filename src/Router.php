@@ -46,7 +46,6 @@ class Router {
      *
      * @param string $methods Allowed methods, | delimited.
      * @param string $pattern A route pattern such as /about/system.
-     * @param mixed  $callback
      */
     public function match(string $methods, string $pattern, mixed $callback): void {
         $pattern = $this->base_route.'/'.trim($pattern, '/');
@@ -64,7 +63,6 @@ class Router {
      * Shorthand for a route accessed using GET.
      *
      * @param string $pattern A route pattern such as /about/system.
-     * @param mixed  $callback
      */
     public function get(string $pattern, mixed $callback): void {
         $this->match('GET', $pattern, $callback);
@@ -96,8 +94,6 @@ class Router {
 
     /**
      * Get the request method used, taking overrides into account.
-     *
-     * @return string
      */
     public function getRequestMethod(): string {
         // Take the method as found in $_SERVER
@@ -156,20 +152,10 @@ class Router {
         return $num_handled !== 0;
     }
 
-    /**
-     * Set the 404 handling function.
-     *
-     * @param mixed $callback
-     */
     public function set404(mixed $callback): void {
         $this->not_found_callback = $callback;
     }
 
-    /**
-     * Triggers 404 response.
-     *
-     * @return void
-     */
     public function trigger404(): void {
         header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
 
@@ -182,11 +168,7 @@ class Router {
      * Replace all curly braces matches {} into word patterns (like Laravel).
      * Checks if there is a routing match.
      *
-     * @param string             $pattern
-     * @param string             $uri
      * @param ?array<int, mixed> $matches
-     *
-     * @return bool
      */
     private function patternMatches(string $pattern, string $uri, ?array &$matches): bool {
         // Replace all curly braces matches {} into word patterns (like Laravel)
@@ -241,21 +223,16 @@ class Router {
         return array_map(static function ($match, $index) use ($matches) {
             // We have the following parameter: take the substring from the current param
             // position until the next one's position (thank you PREG_OFFSET_CAPTURE)
-            if (
-                isset($matches[$index + 1][0]) && is_array($matches[$index + 1][0]) && ($matches[$index + 1][0][1] > -1)
-            ) {
-                return trim(substr($match[0][0], 0, $matches[$index + 1][0][1] - $match[0][1]), '/');
+            if (isset($matches[$index + 1][0]) && is_array($matches[$index + 1][0]) && ($matches[$index + 1][0][1] > -1)) {
+                return trim(substr((string) $match[0][0], 0, $matches[$index + 1][0][1] - $match[0][1]), '/');
             }
 
-            return isset($match[0][0]) && $match[0][1] !== -1 ? trim($match[0][0], '/') : null;
+            return isset($match[0][0]) && $match[0][1] !== -1 ? trim((string) $match[0][0], '/') : null;
         }, $matches, array_keys($matches));
     }
 
     /**
-     * @param mixed                   $callback
      * @param array<int, string|null> $params
-     *
-     * @return void
      */
     private function invoke(mixed $callback, array $params = []): void {
         if (is_string($callback) && method_exists($callback, 'show')) {
@@ -296,8 +273,6 @@ class Router {
      * Explicilty sets the server base path. To be used when your entry script path differs from your entry URLs.
      *
      * @see https://github.com/bramus/router/issues/82#issuecomment-466956078
-     *
-     * @param string $base_path
      */
     public function setBasePath(string $base_path): void {
         $this->server_base_path = $base_path;

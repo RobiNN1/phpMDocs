@@ -35,10 +35,6 @@ class Documentation {
     }
 
     /**
-     * Get config.
-     *
-     * @param string $key
-     *
      * @return array<int|string, mixed>|bool|int|string|null
      */
     public function config(string $key): array|bool|int|string|null {
@@ -56,10 +52,7 @@ class Documentation {
     /**
      * Render template.
      *
-     * @param string               $tpl
      * @param array<string, mixed> $data
-     *
-     * @return string
      */
     public function tpl(string $tpl, array $data = []): string {
         $loader = new FilesystemLoader(__DIR__.'/../templates');
@@ -73,9 +66,9 @@ class Documentation {
             $twig->addExtension(new DebugExtension());
         }
 
-        $twig->addFunction(new TwigFunction('config', [$this, 'config']));
-        $twig->addFunction(new TwigFunction('path', [$this, 'path']));
-        $twig->addFunction(new TwigFunction('is_active', [$this, 'isActive']));
+        $twig->addFunction(new TwigFunction('config', $this->config(...)));
+        $twig->addFunction(new TwigFunction('path', $this->path(...)));
+        $twig->addFunction(new TwigFunction('is_active', $this->isActive(...)));
 
         try {
             return $twig->render($tpl.'.twig', $data);
@@ -84,14 +77,6 @@ class Documentation {
         }
     }
 
-    /**
-     * Check if a link is active.
-     *
-     * @param string $page
-     * @param bool   $start_with
-     *
-     * @return bool
-     */
     public function isActive(string $page, bool $start_with = false): bool {
         $uri = str_replace($this->config('site_path'), '/', $_SERVER['REQUEST_URI']);
         $page = preg_replace('/(\/+)/', '/', $page); // Remove trailing slashes
@@ -101,10 +86,6 @@ class Documentation {
 
     /**
      * Get a relative path to docs from url.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     public function path(string $path = ''): string {
         $count = substr_count($this->currentPath(), '/');
@@ -113,11 +94,6 @@ class Documentation {
         return $path !== '' ? $docs_path.$path : $docs_path;
     }
 
-    /**
-     * Get a current path.
-     *
-     * @return string
-     */
     public function currentPath(): string {
         $current_path = html_entity_decode($_SERVER['REQUEST_URI']);
 
@@ -133,8 +109,6 @@ class Documentation {
 
     /**
      * Get recursively all files and dirs.
-     *
-     * @param string $dir
      *
      * @return array<int, string>
      */
@@ -165,9 +139,6 @@ class Documentation {
     /**
      * Get an array of pages in category.
      *
-     * @param string $path
-     * @param bool   $description
-     *
      * @return array<int, array<string, string>>
      */
     public function getPages(string $path = '', bool $description = false): array {
@@ -196,40 +167,20 @@ class Documentation {
             }
         }
 
-        usort($pages, static fn ($a, $b) => strcmp($a['id'], $b['id']));
+        usort($pages, static fn ($a, $b) => strcmp((string) $a['id'], (string) $b['id']));
 
         return $this->cacheData('get_pages'.$path, $pages);
     }
 
-    /**
-     * Check if page exists.
-     *
-     * @param string $path
-     *
-     * @return bool
-     */
     public function exists(string $path): bool {
         return is_file($this->config('docs_path').'/'.$path.'.md');
     }
 
-    /**
-     * Show error 404 page.
-     *
-     * @return void
-     */
     public function show404(): void {
         header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
         echo $this->tpl('404');
     }
 
-    /**
-     * Cache data.
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return mixed
-     */
     public function cacheData(string $key, mixed $value): mixed {
         $key = strtr($key, ['/' => '_']);
 
@@ -244,13 +195,6 @@ class Documentation {
         return $value;
     }
 
-    /**
-     * Get category path.
-     *
-     * @param string $path
-     *
-     * @return string
-     */
     public function getCategory(string $path): string {
         if ($this->exists($path)) {
             $paths = explode('/', $path);

@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace RobiNN\Pmd;
 
 class ParseMarkdown {
-    private ParsedownExt $parsedown;
+    private readonly ParsedownExt $parsedown;
 
-    private Documentation $docs;
+    private readonly Documentation $docs;
 
-    private ?string $text;
+    private readonly ?string $text;
 
     public function __construct(?string $text = null) {
         $this->docs = new Documentation();

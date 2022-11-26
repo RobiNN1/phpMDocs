@@ -28,8 +28,6 @@ class ParsedownExt extends Parsedown {
     /**
      * Get headings.
      *
-     * @param mixed $Line
-     *
      * @return ?array<string, mixed>
      */
     protected function blockHeader(mixed $Line): ?array {
@@ -61,13 +59,10 @@ class ParsedownExt extends Parsedown {
     /**
      * Create id from title.
      *
-     * @param string $title
-     *
-     * @return string
      */
     public function createIdFromTitle(string $title): string {
         $title = preg_replace('~[^\pL\d]+~u', '-', $title);
-        $title = preg_replace('~[^-\w]+~', '', $title);
+        $title = preg_replace('~[^\-\w]+~', '', $title);
         $title = trim($title, '-');
         $title = preg_replace('~-+~', '-', $title);
 
@@ -77,16 +72,14 @@ class ParsedownExt extends Parsedown {
     /**
      * Fix image paths and add css class.
      *
-     * @param mixed $Excerpt
-     *
      * @return ?array<string, mixed>
      */
     protected function inlineImage(mixed $Excerpt): ?array {
         $inline = parent::inlineImage($Excerpt);
 
         if (isset($inline)) {
-            if (!str_starts_with($inline['element']['attributes']['src'], 'http')) {
-                $path = $this->docs->config('docs_path').'/'.str_replace('../', '', $inline['element']['attributes']['src']);
+            if (!str_starts_with((string) $inline['element']['attributes']['src'], 'http')) {
+                $path = $this->docs->config('docs_path').'/'.str_replace('../', '', (string) $inline['element']['attributes']['src']);
                 $path = realpath($path);
 
                 if (is_file($path)) {
@@ -109,9 +102,6 @@ class ParsedownExt extends Parsedown {
     /**
      * Add class to the table.
      *
-     * @param mixed $Line
-     * @param mixed $Block
-     *
      * @return ?array<string, mixed>
      */
     protected function blockTable(mixed $Line, mixed $Block = null): ?array {
@@ -127,8 +117,6 @@ class ParsedownExt extends Parsedown {
     /**
      * Remove .md from relative paths.
      *
-     * @param mixed $Excerpt
-     *
      * @return ?array<string, mixed>
      */
     protected function inlineLink(mixed $Excerpt): ?array {
@@ -137,8 +125,8 @@ class ParsedownExt extends Parsedown {
         if (isset($block)) {
             $href = $block['element']['attributes']['href'];
 
-            if (!str_starts_with($href, 'http')) {
-                $block['element']['attributes']['href'] = str_ends_with($href, '.md') ? str_replace('.md', '', $href) : $href;
+            if (!str_starts_with((string) $href, 'http')) {
+                $block['element']['attributes']['href'] = str_ends_with((string) $href, '.md') ? str_replace('.md', '', (string) $href) : $href;
             } else {
                 $block['element']['attributes']['target'] = '_blank';
             }
@@ -163,8 +151,8 @@ class ParsedownExt extends Parsedown {
     protected function blockFencedCode(mixed $Line): ?array {
         $block = parent::blockFencedCode($Line);
 
-        if (isset($block) && str_contains($Line['text'], '{') && str_ends_with($Line['text'], '}')) {
-            $parts = explode('{', $Line['text'], 2);
+        if (isset($block) && str_contains((string) $Line['text'], '{') && str_ends_with((string) $Line['text'], '}')) {
+            $parts = explode('{', (string) $Line['text'], 2);
             $Line['text'] = trim($parts[0]);
 
             $block['element']['attributes']['class'] = trim($parts[1], '.}');
