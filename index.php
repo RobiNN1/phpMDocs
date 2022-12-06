@@ -15,7 +15,7 @@ require_once __DIR__.'/vendor/autoload.php';
 $router = new RobiNN\Pmd\Router();
 
 $docs = new RobiNN\Pmd\Documentation();
-$router->set404([$docs, 'show404']);
+$router->set404($docs->show404(...));
 $router->setBasePath($docs->config('site_path'));
 
 /**
