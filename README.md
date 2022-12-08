@@ -23,7 +23,7 @@ Run `composer install` before use.
 
 ## Requirements
 
-- PHP >= 8.1
+- PHP >= 8.2
 - mod_rewrite or alternative
 
 ## Development
