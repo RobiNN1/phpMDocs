@@ -23,7 +23,7 @@ class SearchController extends Documentation {
 
         if ($search_page !== null && $search_page !== '') {
             foreach ($this->allPages() as $page) {
-                foreach (explode(' ', $search_page) as $word) {
+                foreach (explode(' ', (string) $search_page) as $word) {
                     if (stripos($page['title'], $word) !== false) {
                         $results[] = [
                             'page'  => $page['page'],

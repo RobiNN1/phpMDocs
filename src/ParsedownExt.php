@@ -58,7 +58,6 @@ class ParsedownExt extends Parsedown {
 
     /**
      * Create id from title.
-     *
      */
     public function createIdFromTitle(string $title): string {
         $title = preg_replace('~[^\pL\d]+~u', '-', $title);

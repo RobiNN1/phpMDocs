@@ -181,6 +181,13 @@ class Documentation {
         echo $this->tpl('404');
     }
 
+    /**
+     * @template Return
+     *
+     * @param Return $value
+     *
+     * @return Return|mixed
+     */
     public function cacheData(string $key, mixed $value): mixed {
         $key = strtr($key, ['/' => '_']);
 
@@ -211,14 +218,12 @@ class Documentation {
      * It uses an array from the config
      *
      * @param array<string, mixed> $array
-     * @param string               $key
      *
      * @return array<string, mixed>
      */
-    public function orderByArray(array &$array, string $key): array {
-        $order = $this->config('reorder_items')[$key];
-        $array = array_replace(array_flip($order), $array);
+    public function orderByArray(array $array, string $key): array {
+        $order = (array) $this->config('reorder_items')[$key];
 
-        return $array;
+        return array_replace(array_flip($order), $array);
     }
 }

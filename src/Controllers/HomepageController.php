@@ -16,7 +16,7 @@ use RobiNN\Pmd\Documentation;
 
 class HomepageController extends Documentation {
     public function show(): void {
-        $reorder_items = $this->config('reorder_items')['home'];
+        $reorder_items = (array) $this->config('reorder_items')['home'];
 
         if (count($reorder_items) > 0) {
             static $categories = [];
@@ -27,7 +27,7 @@ class HomepageController extends Documentation {
                 }
             }
 
-            $this->orderByArray($categories, 'home');
+            $categories = $this->orderByArray($categories, 'home');
         } else {
             $categories = $this->getPages('', true);
         }

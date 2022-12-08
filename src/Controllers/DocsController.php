@@ -45,7 +45,7 @@ class DocsController extends Documentation {
 
     private function renderCategory(string $path): void {
         $readme_path = $path.'/README';
-        $pages = $this->cacheData(str_replace('/', '_', $readme_path), $this->getPages($readme_path));
+        $pages = (array) $this->cacheData(str_replace('/', '_', $readme_path), $this->getPages($readme_path));
         $md = new ParseMarkdown($readme_path);
 
         echo $this->tpl('category', [
