@@ -17,6 +17,10 @@ namespace RobiNN\Pmd;
  */
 class Router {
     /**
+     * @var callable The function to be executed when no route has been matched.
+     */
+    protected $not_found_callback;
+    /**
      * @var array<string, mixed> The route patterns and their handling functions.
      */
     private array $after_routes = [];
@@ -25,11 +29,6 @@ class Router {
      * @var array<string, mixed> The before middleware route patterns and their handling functions.
      */
     private array $before_routes = [];
-
-    /**
-     * @var callable The function to be executed when no route has been matched.
-     */
-    protected $not_found_callback;
 
     /**
      * @var string Current base route, used for (sub)route mounting.
@@ -165,6 +164,38 @@ class Router {
     }
 
     /**
+     * Define the current relative URI.
+     */
+    public function getCurrentUri(): string {
+        // Get the current Request URI and remove a rewrite base path
+        // from it (= allows one to run the router in a sub folder)
+        $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->getBasePath()));
+
+        // Don't take query params into account on the URL
+        if (str_contains($uri, '?')) {
+            $uri = substr($uri, 0, strpos($uri, '?'));
+        }
+
+        return '/'.trim($uri, '/');// Remove trailing slash + enforce a slash at the start
+    }
+
+    /**
+     * Return server base Path, and define it if isn't defined.
+     */
+    public function getBasePath(): string {
+        return $this->server_base_path;
+    }
+
+    /**
+     * Explicilty sets the server base path. To be used when your entry script path differs from your entry URLs.
+     *
+     * @see https://github.com/bramus/router/issues/82#issuecomment-466956078
+     */
+    public function setBasePath(string $base_path): void {
+        $this->server_base_path = $base_path;
+    }
+
+    /**
      * Replace all curly braces matches {} into word patterns (like Laravel).
      * Checks if there is a routing match.
      *
@@ -244,37 +275,5 @@ class Router {
         } else {
             echo 'Function is not callable';
         }
-    }
-
-    /**
-     * Define the current relative URI.
-     */
-    public function getCurrentUri(): string {
-        // Get the current Request URI and remove a rewrite base path
-        // from it (= allows one to run the router in a sub folder)
-        $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->getBasePath()));
-
-        // Don't take query params into account on the URL
-        if (str_contains($uri, '?')) {
-            $uri = substr($uri, 0, strpos($uri, '?'));
-        }
-
-        return '/'.trim($uri, '/');// Remove trailing slash + enforce a slash at the start
-    }
-
-    /**
-     * Return server base Path, and define it if isn't defined.
-     */
-    public function getBasePath(): string {
-        return $this->server_base_path;
-    }
-
-    /**
-     * Explicilty sets the server base path. To be used when your entry script path differs from your entry URLs.
-     *
-     * @see https://github.com/bramus/router/issues/82#issuecomment-466956078
-     */
-    public function setBasePath(string $base_path): void {
-        $this->server_base_path = $base_path;
     }
 }

@@ -185,8 +185,6 @@ class Documentation {
      * @template Return
      *
      * @param Return $value
-     *
-     * @return Return|mixed
      */
     public function cacheData(string $key, mixed $value): mixed {
         $key = strtr($key, ['/' => '_']);

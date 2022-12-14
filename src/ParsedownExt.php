@@ -26,6 +26,18 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
+     * Create id from title.
+     */
+    public function createIdFromTitle(string $title): string {
+        $title = preg_replace('~[^\pL\d]+~u', '-', $title);
+        $title = preg_replace('~[^\-\w]+~', '', $title);
+        $title = trim($title, '-');
+        $title = preg_replace('~-+~', '-', $title);
+
+        return strtolower($title);
+    }
+
+    /**
      * Get headings.
      *
      * @return ?array<string, mixed>
@@ -54,18 +66,6 @@ class ParsedownExt extends Parsedown {
         }
 
         return $block;
-    }
-
-    /**
-     * Create id from title.
-     */
-    public function createIdFromTitle(string $title): string {
-        $title = preg_replace('~[^\pL\d]+~u', '-', $title);
-        $title = preg_replace('~[^\-\w]+~', '', $title);
-        $title = trim($title, '-');
-        $title = preg_replace('~-+~', '-', $title);
-
-        return strtolower($title);
     }
 
     /**
@@ -142,8 +142,6 @@ class ParsedownExt extends Parsedown {
      * ```
      * It will add .custom-class to the <pre> tag.
      * Only 1 class can be added.
-     *
-     * @param mixed $Line
      *
      * @return ?array<string, mixed>
      */
