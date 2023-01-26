@@ -19,7 +19,7 @@
   "require": {
     "php": ">=8.2",
     "erusev/parsedown": "^1.7",
-    "robinn/cache": "^2.4",
+    "robinn/cache": "^2.5",
     "samdark/sitemap": "^2.4",
     "twig/twig": "^3.5"
   },
