@@ -187,14 +187,9 @@ class Documentation {
      * @param Return $value
      */
     public function cacheData(string $key, mixed $value): mixed {
-        $key = strtr($key, ['/' => '_']);
-
         if ($this->config('cache')['enabled'] && $this->cache->isConnected()) {
-            if ($this->cache->exists($key)) {
-                $value = $this->cache->get($key);
-            } else {
-                $this->cache->set($key, $value, $this->config('cache')['expiration']);
-            }
+            $key = strtr($key, ['/' => '_']);
+            $value = $this->cache->remember($key, $this->config('cache')['expiration'], fn () => $value);
         }
 
         return $value;
