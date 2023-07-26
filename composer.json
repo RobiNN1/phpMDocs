@@ -21,7 +21,7 @@
     "erusev/parsedown": "^1.7",
     "robinn/cache": "^2.6",
     "samdark/sitemap": "^2.4",
-    "twig/twig": "^3.6"
+    "twig/twig": "^3.7"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.10"
