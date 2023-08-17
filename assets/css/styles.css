@@ -878,6 +878,10 @@ blockquote {
   border-color: #7dd3fc;
 }
 
+.focus\:bg-gray-100:focus {
+  background-color: #f3f4f6;
+}
+
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;

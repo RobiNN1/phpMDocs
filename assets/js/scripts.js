@@ -1,8 +1,33 @@
 /**
  * Docs Search
  */
-let search_field = document.getElementById('searchdocs');
-let search_result = document.getElementById('search_result');
+const search_field = document.getElementById('searchdocs');
+const search_result = document.getElementById('search_result');
+
+const render_results = (resp) => {
+    let result = '';
+
+    if (!resp.status) {
+        Array.prototype.forEach.call(resp, data => {
+            if (data) {
+                if (data.page !== data.title) {
+                    result += `<li><a class="block hover:bg-gray-100 focus:bg-gray-100 py-1.5 px-2.5 text-gray-800 hover:text-gray-700 w-full truncate" href="${data.link}">
+                                   <span class="font-normal opacity-75">${data.page}</span><br> ${data.title}
+                               </a></li>`;
+                } else {
+                    result += `<li>
+                                   <a class="block hover:bg-gray-100 focus:bg-gray-100 py-1.5 px-2.5 text-gray-800 hover:text-gray-700 w-full truncate" href="${data.link}">${data.title}</a>
+                               </li>`;
+                }
+            }
+        });
+    } else {
+        result = `<li><span class="block text-gray-500 py-3 px-2.5 w-full truncate">${resp.status}</span></li>`;
+    }
+
+    search_result.innerHTML = result;
+};
+
 
 if (search_field) {
     let no_items = `<li><span class="block text-gray-500 py-3 px-2.5 w-full truncate">Enter a search term to find results.</span></li>`;
@@ -28,27 +53,3 @@ if (search_field) {
         request.send();
     });
 }
-
-const render_results = (resp) => {
-    let result = '';
-
-    if (!resp.status) {
-        Array.prototype.forEach.call(resp, data => {
-            if (data) {
-                if (data.page !== data.title) {
-                    result += `<li><a class="block hover:bg-gray-100 py-1.5 px-2.5 text-gray-800 hover:text-gray-700 w-full truncate" href="${data.link}">
-                                   <span class="font-normal opacity-75">${data.page}</span><br> ${data.title}
-                               </a></li>`;
-                } else {
-                    result += `<li>
-                                   <a class="block hover:bg-gray-100 py-1.5 px-2.5 text-gray-800 hover:text-gray-700 w-full truncate" href="${data.link}">${data.title}</a>
-                               </li>`;
-                }
-            }
-        });
-    } else {
-        result = `<li><span class="block text-gray-500 py-3 px-2.5 w-full truncate">${resp.status}</span></li>`;
-    }
-
-    search_result.innerHTML = result;
-};
