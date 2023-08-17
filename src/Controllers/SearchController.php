@@ -39,7 +39,7 @@ class SearchController extends Documentation {
         $temp_arr = array_unique(array_column($results, 'link'));
         $results = array_values(array_intersect_key($results, $temp_arr));
 
-        if (count($results) === 0) {
+        if ($results === []) {
             $results['status'] = 'We didn\'t find any results!';
         }
 
@@ -74,14 +74,12 @@ class SearchController extends Documentation {
                     'link'  => $this->config('site_url').$file,
                 ];
 
-                if (count($headings) > 0) {
-                    foreach ($headings as $heading) {
-                        $pages[] = [
-                            'page'  => $page_title,
-                            'title' => $heading['title'],
-                            'link'  => $this->config('site_url').$file.'#'.$heading['id'],
-                        ];
-                    }
+                foreach ($headings as $heading) {
+                    $pages[] = [
+                        'page'  => $page_title,
+                        'title' => $heading['title'],
+                        'link'  => $this->config('site_url').$file.'#'.$heading['id'],
+                    ];
                 }
             }
         }

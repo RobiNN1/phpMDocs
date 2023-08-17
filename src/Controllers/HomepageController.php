@@ -18,7 +18,7 @@ class HomepageController extends Documentation {
     public function show(): void {
         $reorder_items = (array) $this->config('reorder_items')['home'];
 
-        if (count($reorder_items) > 0) {
+        if ($reorder_items !== []) {
             static $categories = [];
 
             foreach ($this->getPages('', true) as $category) {
