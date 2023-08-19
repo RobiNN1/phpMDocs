@@ -141,7 +141,7 @@ class ParsedownExt extends Parsedown {
      * // code
      * ```
      * It will add .custom-class to the <pre> tag.
-     * Only 1 class can be added.
+     * Only one class can be added.
      *
      * @return ?array<string, mixed>
      */

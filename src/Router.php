@@ -115,7 +115,8 @@ class Router {
     }
 
     /**
-     * Execute the router: Loop all defined before middleware's and routes, and execute the handling function if a match was found.
+     * Execute the router: Loop all defined before middlewares and routes,
+     * and execute the handling function if a match was found.
      *
      * @param ?callable $callback Function to be executed after a matching route was handled (= after router middleware).
      */
