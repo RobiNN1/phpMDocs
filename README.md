@@ -25,8 +25,3 @@ Run `composer install` before use.
 
 - PHP >= 8.2
 - mod_rewrite or alternative
-
-## Development
-
-For compiling Tailwind CSS run `npm install` and then
-`npm run build` or `npm run watch` for auto-compiling.
