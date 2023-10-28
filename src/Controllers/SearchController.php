@@ -36,7 +36,7 @@ class SearchController extends Documentation {
         $results = array_values(array_intersect_key($results, $temp_arr));
 
         if ($results === []) {
-            $results['status'] = 'We didn\'t find any results!';
+            $results['status'] = "We didn't find any results!";
         }
 
         header('Content-Type: application/json');
@@ -56,9 +56,9 @@ class SearchController extends Documentation {
         $pages = [];
 
         if (is_dir($this->config('docs_path'))) {
-            $dirs = $this->scanDir($this->config('docs_path'));
+            $files = $this->scanDir($this->config('docs_path'));
 
-            foreach ($dirs as $file) {
+            foreach ($files as $file) {
                 $md = new ParseMarkdown($file);
                 $md->parse();
                 $page_title = $md->getTitle();

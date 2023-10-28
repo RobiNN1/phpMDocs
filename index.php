@@ -17,10 +17,10 @@ $router->setBasePath($docs->config('site_path'));
 /**
  * @uses RobiNN\Pmd\Controllers\HomepageController::show()
  * @uses RobiNN\Pmd\Controllers\SearchController::show()
- * @uses RobiNN\Pmd\Controllers\DocsController::show()
+ * @uses RobiNN\Pmd\Controllers\DocController::show()
  */
 $router->get('/', RobiNN\Pmd\Controllers\HomepageController::class);
 $router->get('search', RobiNN\Pmd\Controllers\SearchController::class);
-$router->get('(.*)', RobiNN\Pmd\Controllers\DocsController::class); // It must be at the end
+$router->get('(.*)', RobiNN\Pmd\Controllers\DocController::class); // It must be at the end
 
 $router->run();

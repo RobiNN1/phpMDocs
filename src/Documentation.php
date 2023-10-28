@@ -95,12 +95,10 @@ class Documentation {
 
         // Remove extra slashes and domain
         if (strcmp($this->config('site_path'), '/') !== 0) {
-            $current_path = str_replace($this->config('site_path'), '', $current_path);
-        } else {
-            $current_path = ltrim($current_path, '/');
+            return str_replace($this->config('site_path'), '', $current_path);
         }
 
-        return $current_path;
+        return ltrim($current_path, '/');
     }
 
     /**
@@ -112,10 +110,12 @@ class Documentation {
         $dirs = [];
 
         foreach (scandir($dir) as $filename) {
-            if ($filename[0] === '.' || in_array($filename, $this->config('ignore_files'), true)) {
+            if ($filename[0] === '.') {
                 continue;
             }
-
+            if (in_array($filename, $this->config('ignore_files'), true)) {
+                continue;
+            }
             $file_path = $dir.'/'.$filename;
 
             if (is_dir($file_path)) {
@@ -129,7 +129,7 @@ class Documentation {
 
         natsort($dirs);
 
-        return array_map(static fn ($name) => strtr($name, ['.md' => '']), $dirs);
+        return array_map(static fn ($name): string => strtr($name, ['.md' => '']), $dirs);
     }
 
     /**
@@ -163,7 +163,7 @@ class Documentation {
             }
         }
 
-        usort($pages, static fn ($a, $b) => strcmp((string) $a['id'], (string) $b['id']));
+        usort($pages, static fn ($a, $b): int => strcmp((string) $a['id'], (string) $b['id']));
 
         return $this->cacheData('get_pages'.$path, $pages);
     }

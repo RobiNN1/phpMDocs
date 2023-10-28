@@ -16,6 +16,7 @@ class Router {
      * @var callable The function to be executed when no route has been matched.
      */
     protected $not_found_callback;
+
     /**
      * @var array<string, mixed> The route patterns and their handling functions.
      */
@@ -44,7 +45,7 @@ class Router {
      */
     public function match(string $methods, string $pattern, mixed $callback): void {
         $pattern = $this->base_route.'/'.trim($pattern, '/');
-        $pattern = $this->base_route ? rtrim($pattern, '/') : $pattern;
+        $pattern = $this->base_route !== '' && $this->base_route !== '0' ? rtrim($pattern, '/') : $pattern;
 
         foreach (explode('|', $methods) as $method) {
             $this->after_routes[$method][] = [
@@ -73,7 +74,7 @@ class Router {
 
         // If getallheaders() is available, use that
         if (function_exists('getallheaders')) {
-            $headers = (array) getallheaders();
+            $headers = getallheaders();
         }
 
         // Method getallheaders() not available or went wrong: manually extract 'm
@@ -118,17 +119,17 @@ class Router {
      */
     public function run(?callable $callback = null): bool {
         // Define which method we need to handle
-        $requested_method = $this->getRequestMethod();
+        $request_method = $this->getRequestMethod();
 
         // Handle all before middlewares
-        if (isset($this->before_routes[$requested_method])) {
-            $this->handle($this->before_routes[$requested_method]);
+        if (isset($this->before_routes[$request_method])) {
+            $this->handle($this->before_routes[$request_method]);
         }
 
         // Handle all routes
         $num_handled = 0;
-        if (isset($this->after_routes[$requested_method])) {
-            $num_handled = $this->handle($this->after_routes[$requested_method], true);
+        if (isset($this->after_routes[$request_method])) {
+            $num_handled = $this->handle($this->after_routes[$request_method], true);
         }
 
         // If no route was handled, trigger the 404 (if any)
@@ -165,8 +166,8 @@ class Router {
      */
     public function getCurrentUri(): string {
         // Get the current Request URI and remove a rewrite base path
-        // from it (= allows one to run the router in a sub folder)
-        $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->getBasePath()));
+        // from it (= allows one to run the router in a subfolder)
+        $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->server_base_path));
 
         // Don't take query params into account on the URL
         if (str_contains($uri, '?')) {
@@ -174,13 +175,6 @@ class Router {
         }
 
         return '/'.trim($uri, '/');// Remove trailing slash + enforce a slash at the start
-    }
-
-    /**
-     * Return server base Path, and define it if isn't defined.
-     */
-    public function getBasePath(): string {
-        return $this->server_base_path;
     }
 
     /**
@@ -223,7 +217,7 @@ class Router {
                 // Call the handling function with the URL parameters if the desired input is callable
                 $this->invoke($route['fn'], $this->extractMatchedUrlParams($matches));
 
-                $num_handled++;
+                ++$num_handled;
 
                 // If we need to quit, then quit
                 if ($quit_after_run) {
@@ -248,7 +242,7 @@ class Router {
         $matches = array_slice($matches, 1);
 
         // Extract the matched URL parameters (and only the parameters)
-        return array_map(static function ($match, $index) use ($matches) {
+        return array_map(static function (array $match, int $index) use ($matches): ?string {
             // We have the following parameter: take the substring from the current param
             // position until the next one's position (thank you PREG_OFFSET_CAPTURE)
             if (isset($matches[$index + 1][0]) && is_array($matches[$index + 1][0]) && ($matches[$index + 1][0][1] > -1)) {

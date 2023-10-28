@@ -11,7 +11,7 @@ namespace RobiNN\Pmd\Controllers;
 use RobiNN\Pmd\Documentation;
 use RobiNN\Pmd\ParseMarkdown;
 
-class DocsController extends Documentation {
+class DocController extends Documentation {
     public function show(string $path): void {
         if ($this->exists($path)) {
             $this->renderPage($path);
@@ -29,7 +29,7 @@ class DocsController extends Documentation {
     private function renderPage(string $path): void {
         $md = new ParseMarkdown($path);
 
-        // bugfix, content must first be parsed in order to use headings
+        // bugfix, content must first be parsed to use headings
         $content = $this->cacheData('html_'.$path, $md->parse());
         $title = $md->getTitle();
         $description = $md->getDescription();
