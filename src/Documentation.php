@@ -113,9 +113,11 @@ class Documentation {
             if ($filename[0] === '.') {
                 continue;
             }
+
             if (in_array($filename, $this->config('ignore_files'), true)) {
                 continue;
             }
+
             $file_path = $dir.'/'.$filename;
 
             if (is_dir($file_path)) {
