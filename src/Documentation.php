@@ -31,9 +31,13 @@ class Documentation {
     }
 
     /**
-     * @return array<int|string, mixed>|bool|int|string|null
+     * @template Default
+     *
+     * @param Default $default
+     *
+     * @return mixed|Default
      */
-    public function config(string $key): array|bool|int|string|null {
+    public function config(string $key, $default = null) {
         if (is_file(__DIR__.'/../config.php')) {
             $config = (array) require __DIR__.'/../config.php';
         } else {
@@ -42,7 +46,7 @@ class Documentation {
 
         $config['site_url'] .= $config['site_path'];
 
-        return $config[$key] ?? null;
+        return $config[$key] ?? $default;
     }
 
     /**

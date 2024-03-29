@@ -48,7 +48,7 @@ class DocController extends Documentation {
             'title'       => $md->getTitle(),
             'description' => $md->getDescription(),
             'content'     => $md->parse(),
-            'columns'     => array_chunk($pages, (int) ceil(count($pages) / 3)),
+            'columns'     => array_chunk($pages, max(1, (int) ceil(count($pages) / 3))),
         ]);
     }
 
@@ -58,7 +58,7 @@ class DocController extends Documentation {
         if (!headers_sent()) {
             header('Location: '.$location);
         } else {
-            echo '<script data-cfasync="false">window.location.replace("'.$location.'");</script>';
+            echo '<script>window.location.replace("'.$location.'");</script>';
         }
     }
 }
