@@ -36,7 +36,7 @@ readonly class ParseMarkdown {
     }
 
     public function getDescription(): string {
-        $description = strip_tags($this->docs->config('site_description'));
+        $description = strip_tags((string) $this->docs->config('site_description'));
 
         $data = explode("\n", (string) $this->text);
 

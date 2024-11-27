@@ -167,7 +167,7 @@ class Router {
     public function getCurrentUri(): string {
         // Get the current Request URI and remove a rewrite base path
         // from it (= allows one to run the router in a subfolder)
-        $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->server_base_path));
+        $uri = substr(rawurldecode((string) $_SERVER['REQUEST_URI']), strlen($this->server_base_path));
 
         // Don't take query params into account on the URL
         if (str_contains($uri, '?')) {

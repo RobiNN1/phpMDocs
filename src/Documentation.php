@@ -81,7 +81,7 @@ class Documentation {
         $uri = str_replace($this->config('site_path'), '/', $_SERVER['REQUEST_URI']);
         $page = preg_replace('/(\/+)/', '/', $page); // Remove trailing slashes
 
-        return ($uri === $page || $uri === $page.'/') || ($start_with ? str_starts_with($uri, $page) : null);
+        return ($uri === $page || $uri === $page.'/') || ($start_with ? str_starts_with($uri, (string) $page) : null);
     }
 
     /**
@@ -95,10 +95,10 @@ class Documentation {
     }
 
     public function currentPath(): string {
-        $current_path = html_entity_decode($_SERVER['REQUEST_URI']);
+        $current_path = html_entity_decode((string) $_SERVER['REQUEST_URI']);
 
         // Remove extra slashes and domain
-        if (strcmp($this->config('site_path'), '/') !== 0) {
+        if (strcmp((string) $this->config('site_path'), '/') !== 0) {
             return str_replace($this->config('site_path'), '', $current_path);
         }
 
