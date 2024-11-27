@@ -95,7 +95,7 @@ class Documentation {
     }
 
     public function currentPath(): string {
-        $current_path = html_entity_decode((string) $_SERVER['REQUEST_URI']);
+        $current_path = html_entity_decode($_SERVER['REQUEST_URI']);
 
         // Remove extra slashes and domain
         if (strcmp((string) $this->config('site_path'), '/') !== 0) {

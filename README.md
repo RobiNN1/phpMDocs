@@ -16,8 +16,8 @@ Demo (customized design) https://uikit.kelcak.com/
 
 ## Installation
 
-Simply extract the content to the root directory of the website.
-Or put it to sub folder, in this case, need to update `site_path` option in config.php file.
+Extract the content to the root directory of the website.
+Or put it to subfolder, in this case, need to update `site_path` option in config.php file.
 
 If necessary, set the path to the documentation content (`docs_path` option).
 

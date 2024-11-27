@@ -135,8 +135,7 @@ class Router {
         // If no route was handled, trigger the 404 (if any)
         if ($num_handled === 0) {
             $this->trigger404();
-        } // If a route was handled, perform the finish callback (if any)
-        elseif ($callback && is_callable($callback)) {
+        } elseif ($callback) { // If a route was handled, perform the finish callback (if any)
             $callback();
         }
 
@@ -149,16 +148,14 @@ class Router {
         return $num_handled !== 0;
     }
 
-    public function set404(mixed $callback): void {
+    public function set404(callable $callback): void {
         $this->not_found_callback = $callback;
     }
 
     public function trigger404(): void {
         header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
 
-        if (is_callable($this->not_found_callback)) {
-            $this->invoke($this->not_found_callback);
-        }
+        $this->invoke($this->not_found_callback);
     }
 
     /**
@@ -167,14 +164,14 @@ class Router {
     public function getCurrentUri(): string {
         // Get the current Request URI and remove a rewrite base path
         // from it (= allows one to run the router in a subfolder)
-        $uri = substr(rawurldecode((string) $_SERVER['REQUEST_URI']), strlen($this->server_base_path));
+        $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->server_base_path));
 
         // Don't take query params into account on the URL
         if (str_contains($uri, '?')) {
             $uri = substr($uri, 0, strpos($uri, '?'));
         }
 
-        return '/'.trim($uri, '/');// Remove trailing slash + enforce a slash at the start
+        return '/'.trim($uri, '/');// Remove trailing slash and enforce a slash at the start
     }
 
     /**
@@ -196,7 +193,9 @@ class Router {
         // Replace all curly braces matches {} into word patterns (like Laravel)
         $pattern = preg_replace('/\/{(.*?)}/', '/(.*?)', $pattern);
 
-        // we may have a match!
+        /**
+         * @phpstan-ignore parameterByRef.type
+         */
         return (bool) preg_match_all('#^'.$pattern.'$#', $uri, $matches, PREG_OFFSET_CAPTURE);
     }
 

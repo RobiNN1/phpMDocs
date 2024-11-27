@@ -65,7 +65,7 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Fix image paths and add css class.
+     * Fix image paths and add CSS class.
      *
      * @return ?array<string, mixed>
      */
