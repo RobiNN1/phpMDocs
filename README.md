@@ -4,8 +4,6 @@ Simple but powerful Markdown documentation.
 
 ![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=RobiNN1.phpMDocs)
 
-Demo (customized design) https://uikit.kelcak.com/
-
 ## Features
 
 - Search within Markdown files
