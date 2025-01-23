@@ -1,4 +1,18 @@
-@tailwind base;
+@import 'tailwindcss' source(none);
+@import 'tailwindcss/theme' theme(inline reference);
+@source '../../templates/';
+@source '../../assets/js/scripts.js';
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
 
 @layer base {
     h1, h2, h3, h4, h5, h6 {
@@ -34,7 +48,7 @@
     }
 
     code {
-        @apply bg-gray-500/[.08] rounded py-0.5 px-1;
+        @apply bg-gray-500/[.08] rounded-sm py-0.5 px-1;
     }
 
     svg {
@@ -46,5 +60,10 @@
     }
 }
 
-@tailwind components;
-@tailwind utilities;
+.img-fluid {
+    @apply max-w-full h-auto;
+}
+
+.table-responsive {
+    @apply table-auto w-full text-left;
+}

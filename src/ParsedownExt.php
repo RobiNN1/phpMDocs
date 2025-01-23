@@ -88,7 +88,7 @@ class ParsedownExt extends Parsedown {
                 $inline['element']['attributes']['src'] = 'data:image/'.$image_type.';base64,'.$img_data;
             }
 
-            $inline['element']['attributes']['class'] = 'max-w-full h-auto';
+            $inline['element']['attributes']['class'] = 'img-fluid';
         }
 
         return $inline;
@@ -103,7 +103,7 @@ class ParsedownExt extends Parsedown {
         $block = parent::blockTable($Line, $Block);
 
         if (isset($block)) {
-            $block['element']['attributes']['class'] = 'table-auto w-full text-left';
+            $block['element']['attributes']['class'] = 'table-responsive';
         }
 
         return $block;
