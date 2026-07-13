@@ -8,27 +8,26 @@
     {% endif %}
     <meta name="keywords" content="{{ config('keywords')|join(',') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{{ path('assets/css/styles.css') }}" rel="stylesheet">
-    <script src="{{ path('assets/js/alpinejs.min.js') }}" defer></script>
+    <link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet">
     {% block head_content %}{% endblock %}
 </head>
 <body class="antialiased text-gray-900 bg-gray-50">
 {% block header %}
     <header>
-        <nav class="mb-4 bg-white shadow-xs" x-data="{ toggleNav: false }">
+        <nav class="mb-4 bg-white shadow-xs">
             <div class="container lg:max-w-7xl mx-auto px-4 py-4">
                 <div class="relative flex justify-between flex-col sm:flex-row">
                     <div class="flex flex-1 justify-between">
                         <a class="block py-2 px-1 font-bold text-black hover:text-gray-600" href="{{ config('site_url') }}">
                             {{ config('logo')|replace({'{site_title}': config('site_title')})|raw }}
                         </a>
-                        <button class="block py-2 px-1 text-gray-600 hover:text-black sm:hidden" type="button" @click="toggleNav = !toggleNav">
+                        <button class="block py-2 px-1 text-gray-600 hover:text-black sm:hidden" type="button" data-toggle="#mobile_nav" aria-label="Toggle navigation">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                             </svg>
                         </button>
                     </div>
-                    <div class="sm:flex items-center justify-end" :class="{'block' : toggleNav, 'hidden' : !toggleNav}">
+                    <div class="hidden sm:flex items-center justify-end" id="mobile_nav">
                         {% if config('nav_links') %}
                             {% for item in config('nav_links') %}
                                 {% set link = item.link|replace({'{site_url}': config('site_url')}) %}
@@ -37,10 +36,10 @@
                                 </a>
                             {% endfor %}
                         {% endif %}
-                        <div class="sm:ml-2 relative" x-data="{ ddmshow: false }" @click.away="ddmshow = false">
-                            <input @click="ddmshow = ! ddmshow" id="searchdocs" type="text" placeholder="Search..." aria-label=""
+                        <div class="sm:ml-2 relative" id="search_container">
+                            <input id="searchdocs" type="text" placeholder="Search..." aria-label="Search"
                                    class="w-full appearance-none placeholder-gray-400 leading-normal py-2 px-3 bg-white rounded-sm text-gray-600 text-sm border border-gray-300 focus:outline-hidden focus:ring-3 focus:ring-sky-100 focus:border-sky-300">
-                            <ul x-show="ddmshow" class="absolute bg-white rounded-sm border border-gray-200 min-w-full mt-2 shadow-sm h-auto max-h-80 overflow-x-hidden right-0 left-auto" id="search_result"></ul>
+                            <ul class="hidden absolute bg-white rounded-sm border border-gray-200 min-w-full mt-2 shadow-sm h-auto max-h-80 overflow-x-hidden right-0 left-auto z-10" id="search_result"></ul>
                         </div>
                     </div>
                 </div>
@@ -62,6 +61,6 @@
     </footer>
 {% endblock %}
 <script>let SITEURL = '{{ config('site_url') }}';</script>
-<script src="{{ path('assets/js/scripts.js') }}"></script>
+<script src="{{ asset('assets/js/scripts.js') }}"></script>
 </body>
 </html>

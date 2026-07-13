@@ -23,5 +23,5 @@ Run `composer install` before use.
 
 ## Requirements
 
-- PHP >= 8.2
+- PHP >= 8.4
 - mod_rewrite or alternative

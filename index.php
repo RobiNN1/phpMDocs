@@ -12,7 +12,7 @@ $router = new RobiNN\Pmd\Router();
 
 $docs = new RobiNN\Pmd\Documentation();
 $router->set404($docs->show404(...));
-$router->setBasePath($docs->config('site_path'));
+$router->setBasePath(RobiNN\Pmd\Config::get('site_path'));
 
 /**
  * @uses RobiNN\Pmd\Controllers\HomepageController::show()

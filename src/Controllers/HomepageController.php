@@ -8,28 +8,21 @@ declare(strict_types=1);
 
 namespace RobiNN\Pmd\Controllers;
 
+use RobiNN\Pmd\Config;
 use RobiNN\Pmd\Documentation;
+use RobiNN\Pmd\Helpers;
+use RobiNN\Pmd\Template;
 
 class HomepageController extends Documentation {
     public function show(): void {
-        $reorder_items = (array) $this->config('reorder_items')['home'];
+        $categories = $this->getPages();
+        $reorder_items = (array) Config::get('reorder_items')['home'];
 
         if ($reorder_items !== []) {
-            static $categories = [];
-
-            foreach ($this->getPages('', true) as $category) {
-                if (in_array($category['path'], $reorder_items, true)) {
-                    $categories[$category['path']] = $category;
-                }
-            }
-
-            $categories = $this->orderByArray($categories, 'home');
-        } else {
-            $categories = $this->getPages('', true);
+            $by_path = array_column($categories, null, 'path');
+            $categories = Helpers::orderByArray(array_intersect_key($by_path, array_flip($reorder_items)), 'home');
         }
 
-        echo $this->tpl('home', [
-            'categories' => $this->cacheData('homepage_categories', $categories),
-        ]);
+        echo Template::render('home', ['categories' => $categories]);
     }
 }

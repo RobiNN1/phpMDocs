@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace RobiNN\Pmd;
 
+use Override;
 use Parsedown;
 
 class ParsedownExt extends Parsedown {
@@ -18,8 +19,10 @@ class ParsedownExt extends Parsedown {
 
     public string $title = '';
 
-    public function __construct(private readonly Documentation $docs) {
-    }
+    /**
+     * @var ?string Absolute path to the directory of the currently parsed page, for relative images.
+     */
+    public ?string $page_dir = null;
 
     /**
      * Create id from title.
@@ -38,12 +41,13 @@ class ParsedownExt extends Parsedown {
      *
      * @return ?array<string, mixed>
      */
+    #[Override]
     protected function blockHeader(mixed $Line): ?array {
         $block = parent::blockHeader($Line);
 
         // Set headings
-        if (isset($block['element']['text'])) {
-            $page_title = $block['element']['text'];
+        if (isset($block['element']['handler']['argument'])) {
+            $page_title = (string) $block['element']['handler']['argument'];
             $level = $block['element']['name'];
             $id = $this->createIdFromTitle($page_title);
 
@@ -51,13 +55,14 @@ class ParsedownExt extends Parsedown {
                 $this->title = $page_title;
             }
 
-            if (in_array($level, ['h2', 'h3', 'h4', 'h5', 'h6'])) {
+            if (in_array($level, ['h2', 'h3', 'h4', 'h5', 'h6'], true)) {
                 $this->headings[] = [
                     'title' => $page_title,
                     'id'    => $id,
                 ];
 
-                $block['element']['text'] = '<'.$level.' id="'.$id.'"><a href="#'.$id.'">'.$page_title.'</a></'.$level.'>';
+                $block['element']['attributes']['id'] = $id;
+                $block['element']['handler']['argument'] = '['.$page_title.'](#'.$id.')';
             }
         }
 
@@ -65,27 +70,26 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Fix image paths and add CSS class.
+     * Fix image paths and add a CSS class.
      *
      * @return ?array<string, mixed>
      */
+    #[Override]
     protected function inlineImage(mixed $Excerpt): ?array {
         $inline = parent::inlineImage($Excerpt);
 
         if (isset($inline)) {
-            if (!str_starts_with((string) $inline['element']['attributes']['src'], 'http')) {
-                $path = $this->docs->config('docs_path').'/'.str_replace('../', '', (string) $inline['element']['attributes']['src']);
-                $path = realpath($path);
+            $src = (string) $inline['element']['attributes']['src'];
 
-                if (is_file($path)) {
+            if (!str_starts_with($src, 'http') && !str_starts_with($src, 'data:')) {
+                $path = $this->resolveImage($src);
+
+                if ($path !== null) {
                     $image_type = pathinfo($path, PATHINFO_EXTENSION);
-                    $img_data = base64_encode(file_get_contents($path));
-                } else {
-                    $image_type = 'n\a';
-                    $img_data = 'n\a';
-                }
+                    $img_data = base64_encode((string) file_get_contents($path));
 
-                $inline['element']['attributes']['src'] = 'data:image/'.$image_type.';base64,'.$img_data;
+                    $inline['element']['attributes']['src'] = 'data:image/'.$image_type.';base64,'.$img_data;
+                }
             }
 
             $inline['element']['attributes']['class'] = 'img-fluid';
@@ -95,10 +99,36 @@ class ParsedownExt extends Parsedown {
     }
 
     /**
-     * Add class to the table.
+     * Resolve an image relative to the current page (or the docs root), only files inside the docs directory are allowed.
+     */
+    private function resolveImage(string $src): ?string {
+        $docs_root = realpath(Config::get('docs_path'));
+
+        if ($docs_root === false) {
+            return null;
+        }
+
+        foreach ([$this->page_dir, $docs_root] as $base) {
+            if ($base === null) {
+                continue;
+            }
+
+            $path = realpath($base.'/'.$src);
+
+            if ($path !== false && is_file($path) && str_starts_with($path, $docs_root.DIRECTORY_SEPARATOR)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Add a class to the table.
      *
      * @return ?array<string, mixed>
      */
+    #[Override]
     protected function blockTable(mixed $Line, mixed $Block = null): ?array {
         $block = parent::blockTable($Line, $Block);
 
@@ -114,6 +144,7 @@ class ParsedownExt extends Parsedown {
      *
      * @return ?array<string, mixed>
      */
+    #[Override]
     protected function inlineLink(mixed $Excerpt): ?array {
         $block = parent::inlineLink($Excerpt);
 
@@ -141,12 +172,12 @@ class ParsedownExt extends Parsedown {
      *
      * @return ?array<string, mixed>
      */
+    #[Override]
     protected function blockFencedCode(mixed $Line): ?array {
         $block = parent::blockFencedCode($Line);
 
         if (isset($block) && str_contains((string) $Line['text'], '{') && str_ends_with((string) $Line['text'], '}')) {
             $parts = explode('{', (string) $Line['text'], 2);
-            $Line['text'] = trim($parts[0]);
 
             $block['element']['attributes']['class'] = trim($parts[1], '.}');
         }

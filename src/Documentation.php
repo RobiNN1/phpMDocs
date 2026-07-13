@@ -8,101 +8,23 @@ declare(strict_types=1);
 
 namespace RobiNN\Pmd;
 
-use DirectoryIterator;
-use Exception;
+use Closure;
+use FilesystemIterator;
 use RobiNN\Cache\Cache;
 use RobiNN\Cache\CacheException;
-use Twig\Environment;
-use Twig\Extension\DebugExtension;
-use Twig\Loader\FilesystemLoader;
-use Twig\TwigFunction;
+use SplFileInfo;
 
 class Documentation {
-    private Cache $cache;
+    private ?Cache $cache = null;
 
     public function __construct() {
-        if ($this->config('cache')['enabled']) {
+        if (Config::get('cache')['enabled']) {
             try {
-                $this->cache = new Cache($this->config('cache'));
+                $this->cache = new Cache(Config::get('cache'));
             } catch (CacheException $e) {
                 echo $e->getMessage();
             }
         }
-    }
-
-    /**
-     * @template Default
-     *
-     * @param Default $default
-     *
-     * @return mixed|Default
-     */
-    public function config(string $key, $default = null) {
-        if (is_file(__DIR__.'/../config.php')) {
-            $config = (array) require __DIR__.'/../config.php';
-        } else {
-            exit('The configuration file is missing.');
-        }
-
-        $config['site_url'] .= $config['site_path'];
-
-        return $config[$key] ?? $default;
-    }
-
-    /**
-     * Render template.
-     *
-     * @param array<string, mixed> $data
-     */
-    public function tpl(string $tpl, array $data = []): string {
-        $loader = new FilesystemLoader(__DIR__.'/../templates');
-
-        $twig = new Environment($loader, [
-            'cache' => __DIR__.'/../cache/twig',
-            'debug' => $this->config('twig_debug'),
-        ]);
-
-        if ($this->config('twig_debug')) {
-            $twig->addExtension(new DebugExtension());
-        }
-
-        $twig->addFunction(new TwigFunction('config', $this->config(...)));
-        $twig->addFunction(new TwigFunction('path', $this->path(...)));
-        $twig->addFunction(new TwigFunction('is_active', $this->isActive(...)));
-
-        try {
-            return $twig->render($tpl.'.twig', $data);
-        } catch (Exception $e) {
-            return $e->getMessage().' in '.$e->getFile().' at line: '.$e->getLine();
-        }
-    }
-
-    public function isActive(string $page, bool $start_with = false): bool {
-        $uri = str_replace($this->config('site_path'), '/', $_SERVER['REQUEST_URI']);
-        $page = preg_replace('/(\/+)/', '/', $page); // Remove trailing slashes
-
-        return ($uri === $page || $uri === $page.'/') || ($start_with ? str_starts_with($uri, (string) $page) : null);
-    }
-
-    /**
-     * Get a relative path to docs from url.
-     */
-    public function path(string $path = ''): string {
-        $count = substr_count($this->currentPath(), '/');
-        $docs_path = str_repeat('../', $count);
-
-        return $path !== '' ? $docs_path.$path : $docs_path;
-    }
-
-    public function currentPath(): string {
-        $current_path = html_entity_decode($_SERVER['REQUEST_URI']);
-
-        // Remove extra slashes and domain
-        if (strcmp((string) $this->config('site_path'), '/') !== 0) {
-            return str_replace($this->config('site_path'), '', $current_path);
-        }
-
-        return ltrim($current_path, '/');
     }
 
     /**
@@ -111,89 +33,80 @@ class Documentation {
      * @return array<int, string>
      */
     public function scanDir(string $dir): array {
-        $dirs = [];
+        $items = [];
 
-        foreach (scandir($dir) as $filename) {
-            if ($filename[0] === '.') {
-                continue;
-            }
-
-            if (in_array($filename, $this->config('ignore_files'), true)) {
+        foreach (scandir($dir) ?: [] as $filename) {
+            if ($this->isIgnored($filename)) {
                 continue;
             }
 
             $file_path = $dir.'/'.$filename;
 
             if (is_dir($file_path)) {
-                foreach ($this->scanDir($file_path) as $child_filename) {
-                    $dirs[] = $filename.'/'.$child_filename;
+                if (!$this->hasMarkdown($file_path)) {
+                    continue;
                 }
-            }
 
-            $dirs[] = $filename;
+                foreach ($this->scanDir($file_path) as $child_filename) {
+                    $items[] = $filename.'/'.$child_filename;
+                }
+
+                $items[] = $filename;
+            } elseif (str_ends_with($filename, '.md')) {
+                $items[] = basename($filename, '.md');
+            }
         }
 
-        natsort($dirs);
+        natsort($items);
 
-        return array_map(static fn ($name): string => strtr($name, ['.md' => '']), $dirs);
+        return array_values($items);
     }
 
     /**
-     * Get an array of pages in category.
+     * Get an array of pages in a category.
      *
      * @return array<int, array<string, string>>
      */
-    public function getPages(string $path = '', bool $description = false): array {
-        static $pages = [];
+    public function getPages(string $path = ''): array {
+        $category = $this->getCategory($path);
 
-        $path = $this->getCategory($path);
+        return $this->cacheData('get_pages:'.$category, function () use ($category): array {
+            $dir = Config::get('docs_path').'/'.$category;
 
-        if (is_dir($this->config('docs_path').'/'.$path)) {
-            $dir = new DirectoryIterator($this->config('docs_path').'/'.$path);
-
-            foreach ($dir as $file) {
-                if (!$file->isDot() && !in_array($file->getFilename(), $this->config('ignore_files'), true)) {
-                    $file_path = $path.'/'.str_replace('.md', '', $file->getFilename());
-
-                    $md = new ParseMarkdown($file_path);
-
-                    $pages[] = [
-                        'title'       => $md->getTitle(),
-                        'description' => $description ? $md->getDescription() : '',
-                        'url'         => $this->config('site_url').ltrim($file_path, '/'),
-                        'is_dir'      => $file->isDir(),
-                        'id'          => $file->getFilename(),
-                        'path'        => trim($file_path, '/'),
-                    ];
-                }
+            if (!is_dir($dir)) {
+                return [];
             }
-        }
 
-        usort($pages, static fn ($a, $b): int => strcmp((string) $a['id'], (string) $b['id']));
+            $pages = [];
 
-        return $this->cacheData('get_pages'.$path, $pages);
+            foreach (new FilesystemIterator($dir) as $file) {
+                if (!$file instanceof SplFileInfo) {
+                    continue;
+                }
+                if (!$this->isListable($file)) {
+                    continue;
+                }
+                $file_path = $category.'/'.$file->getBasename('.md');
+                $md = new ParseMarkdown($file_path);
+
+                $pages[] = [
+                    'title'       => $md->getTitle(),
+                    'description' => $md->getDescription(),
+                    'url'         => Config::get('site_url').ltrim($file_path, '/'),
+                    'is_dir'      => $file->isDir(),
+                    'id'          => $file->getFilename(),
+                    'path'        => trim($file_path, '/'),
+                ];
+            }
+
+            usort($pages, static fn (array $a, array $b): int => strcmp((string) $a['id'], (string) $b['id']));
+
+            return $pages;
+        });
     }
 
     public function exists(string $path): bool {
-        return is_file($this->config('docs_path').'/'.$path.'.md');
-    }
-
-    public function show404(): void {
-        header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
-        echo $this->tpl('404');
-    }
-
-    /**
-     * @template Return
-     *
-     * @param Return $value
-     */
-    public function cacheData(string $key, mixed $value): mixed {
-        if ($this->config('cache')['enabled'] && $this->cache->isConnected()) {
-            return $this->cache->remember(strtr($key, ['/' => '_']), $value, $this->config('cache')['expiration']);
-        }
-
-        return $value;
+        return is_file(Config::get('docs_path').'/'.$path.'.md');
     }
 
     public function getCategory(string $path): string {
@@ -206,18 +119,42 @@ class Documentation {
         return $path;
     }
 
-    /**
-     * Order an array by another array.
-     *
-     * It uses an array from the config
-     *
-     * @param array<string, mixed> $array
-     *
-     * @return array<string, mixed>
-     */
-    public function orderByArray(array $array, string $key): array {
-        $order = (array) $this->config('reorder_items')[$key];
+    public function show404(): void {
+        header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
+        echo Template::render('404');
+    }
 
-        return array_replace(array_flip($order), $array);
+    /**
+     * Get the data from cache or store the value / result of a closure.
+     *
+     * Closures are executed only when the data is not cached yet.
+     */
+    public function cacheData(string $key, mixed $value): mixed {
+        if ($this->cache instanceof Cache && $this->cache->isConnected()) {
+            $key = trim(strtr($key, ['/' => ':']), ':');
+
+            return $this->cache->remember($key, $value, (int) Config::get('cache')['expiration']);
+        }
+
+        return $value instanceof Closure ? $value() : $value;
+    }
+
+    private function isIgnored(string $filename): bool {
+        return str_starts_with($filename, '.') || in_array($filename, Config::get('ignore_files'), true);
+    }
+
+    /**
+     * Only Markdown files and categories that contain at least one Markdown file (skips asset dirs).
+     */
+    private function isListable(SplFileInfo $file): bool {
+        if ($this->isIgnored($file->getFilename())) {
+            return false;
+        }
+
+        return $file->isDir() ? $this->hasMarkdown($file->getPathname()) : $file->getExtension() === 'md';
+    }
+
+    private function hasMarkdown(string $dir): bool {
+        return (glob($dir.'/*.md') ?: []) !== [];
     }
 }

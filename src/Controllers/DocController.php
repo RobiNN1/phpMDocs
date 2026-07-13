@@ -8,15 +8,17 @@ declare(strict_types=1);
 
 namespace RobiNN\Pmd\Controllers;
 
+use RobiNN\Pmd\Config;
 use RobiNN\Pmd\Documentation;
 use RobiNN\Pmd\ParseMarkdown;
+use RobiNN\Pmd\Template;
 
 class DocController extends Documentation {
     public function show(string $path): void {
         if ($this->exists($path)) {
             $this->renderPage($path);
         } elseif ($this->exists($path.'/README')) {
-            if ($this->config('category_page')) {
+            if (Config::get('category_page')) {
                 $this->renderCategory($path);
             } else {
                 $this->redirectToPage($path);
@@ -29,31 +31,45 @@ class DocController extends Documentation {
     private function renderPage(string $path): void {
         $md = new ParseMarkdown($path);
 
-        // bugfix, content must first be parsed to use headings
-        $content = $this->cacheData('html_'.$path, $md->parse());
-        $title = $md->getTitle();
-        $description = $md->getDescription();
-        $toc = $this->cacheData('toc_'.$path, $md->getHeadings());
-        $all_pages = $this->getPages($path); // pages in category - left sidebar
+        // One cache entry per page, content must be parsed first so that the title and headings are available.
+        $page = (array) $this->cacheData('page:'.$path, static fn (): array => [
+            'content'     => $md->parse(),
+            'title'       => $md->getTitle(),
+            'description' => $md->getDescription(),
+            'toc'         => $md->getHeadings(),
+        ]);
 
-        echo $this->tpl('page', compact('title', 'description', 'content', 'toc', 'all_pages'));
+        $page['all_pages'] = $this->getPages($path); // pages in category - left sidebar
+
+        echo Template::render('page', $page);
     }
 
     private function renderCategory(string $path): void {
         $readme_path = $path.'/README';
-        $pages = (array) $this->cacheData(str_replace('/', '_', $readme_path), $this->getPages($readme_path));
+        $pages = $this->getPages($readme_path);
         $md = new ParseMarkdown($readme_path);
 
-        echo $this->tpl('category', [
+        $category = (array) $this->cacheData('category:'.$path, static fn (): array => [
+            'content'     => $md->parse(),
             'title'       => $md->getTitle(),
             'description' => $md->getDescription(),
-            'content'     => $md->parse(),
-            'columns'     => array_chunk($pages, max(1, (int) ceil(count($pages) / 3))),
         ]);
+
+        $category['columns'] = array_chunk($pages, max(1, (int) ceil(count($pages) / 3)));
+
+        echo Template::render('category', $category);
     }
 
     private function redirectToPage(string $path): void {
-        $location = $this->getPages($path)[0]['url'];
+        $pages = $this->getPages($path);
+
+        if ($pages === []) {
+            $this->show404();
+
+            return;
+        }
+
+        $location = $pages[0]['url'];
 
         if (!headers_sent()) {
             header('Location: '.$location);

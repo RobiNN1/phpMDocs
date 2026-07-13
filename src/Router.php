@@ -167,8 +167,10 @@ class Router {
         $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen($this->server_base_path));
 
         // Don't take query params into account on the URL
-        if (str_contains($uri, '?')) {
-            $uri = substr($uri, 0, strpos($uri, '?'));
+        $query_pos = strpos($uri, '?');
+
+        if ($query_pos !== false) {
+            $uri = substr($uri, 0, $query_pos);
         }
 
         return '/'.trim($uri, '/');// Remove trailing slash and enforce a slash at the start
@@ -214,7 +216,7 @@ class Router {
             // is there a valid match?
             if ($this->patternMatches($route['pattern'], $this->getCurrentUri(), $matches)) {
                 // Call the handling function with the URL parameters if the desired input is callable
-                $this->invoke($route['fn'], $this->extractMatchedUrlParams($matches));
+                $this->invoke($route['fn'], $this->extractMatchedUrlParams($matches ?? []));
 
                 ++$num_handled;
 

@@ -11,14 +11,22 @@ namespace RobiNN\Pmd;
 readonly class ParseMarkdown {
     private ParsedownExt $parsedown;
 
-    private Documentation $docs;
-
     private ?string $text;
 
+    /**
+     * @param ?string $text Path to a markdown file (relative to docs_path) or raw markdown text.
+     */
     public function __construct(?string $text = null) {
-        $this->docs = new Documentation();
-        $this->parsedown = new ParsedownExt($this->docs);
-        $this->text = is_file($this->getFile($text)) ? file_get_contents($this->getFile($text)) : $text;
+        $this->parsedown = new ParsedownExt();
+
+        $file = $text !== null ? $this->getFile($text) : null;
+
+        if ($file !== null && is_file($file)) {
+            $this->parsedown->page_dir = dirname($file);
+            $this->text = (string) file_get_contents($file);
+        } else {
+            $this->text = $text;
+        }
     }
 
     public function parse(): string {
@@ -36,7 +44,7 @@ readonly class ParseMarkdown {
     }
 
     public function getDescription(): string {
-        $description = strip_tags((string) $this->docs->config('site_description'));
+        $description = strip_tags((string) Config::get('site_description'));
 
         $data = explode("\n", (string) $this->text);
 
@@ -44,9 +52,10 @@ readonly class ParseMarkdown {
             $description = strip_tags($data[2]);
             $max_length = 158; // Recommended maximum for description size
 
-            if (strlen($description) > $max_length) {
-                $offset = ($max_length - 3) - strlen($description);
-                $description = substr($description, 0, strrpos($description, ' ', $offset)).'...';
+            if (mb_strlen($description) > $max_length) {
+                $cut = mb_substr($description, 0, $max_length - 3);
+                $pos = mb_strrpos($cut, ' ');
+                $description = ($pos !== false ? mb_substr($cut, 0, $pos) : $cut).'...';
             }
         }
 
@@ -63,7 +72,7 @@ readonly class ParseMarkdown {
     }
 
     private function getFile(string $path): string {
-        $path = $this->docs->config('docs_path').'/'.trim($path, '/');
+        $path = Config::get('docs_path').'/'.trim($path, '/');
 
         return is_file($path.'.md') ? $path.'.md' : $path.'/README.md';
     }

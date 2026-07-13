@@ -14,7 +14,7 @@ $is_https = (
 return [
     'site_title'       => 'phpMDocs', // Displayed on homepage and meta tag
     'site_description' => '',
-    'site_path'        => '/', // If a script is running in subdir, need to set the current directory name, e.g. /docs/ for site.com/docs
+    'site_path'        => '/', // If a script is running in subdir, need to set the current directory name, e.g., /docs/ for site.com/docs
     'site_url'         => 'http'.($is_https ? 's' : '').'://'.$_SERVER['SERVER_NAME'], // If that doesn't work, it may be replaced with the actual URL
     'site_url_sitemap' => 'https://example.com', // For sitemap generator
     'keywords'         => ['docs', 'php', 'markdown'],
@@ -34,7 +34,6 @@ return [
         // pages that are not listed will not be displayed (homepage only), if is empty nothing will change.
         'home' => [],
     ],
-    'twig_debug'       => false,
     'cache'            => [
         'enabled'    => true,
         'expiration' => 3600, // 1h default
@@ -42,4 +41,5 @@ return [
         'storage'    => 'file',
         'file'       => ['path' => __DIR__.'/cache/data', 'secret' => 'phpmdocs_cache'],
     ],
+    'twig_debug'       => true,
 ];

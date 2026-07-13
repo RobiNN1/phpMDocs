@@ -1,10 +1,13 @@
 .idea
-*.config
 .DS_Store
 cache
 vendor
 composer.lock
 node_modules
 package-lock.json
-sitemap.xml
-robots.txt
+/config.php
+/.env
+/.env.*
+!/.env.example
+.phpunit.result.cache
+.ide_helper.php

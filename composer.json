@@ -17,14 +17,15 @@
     }
   ],
   "require": {
-    "php": ">=8.2",
-    "erusev/parsedown": "^1.7",
-    "robinn/cache": "^2.6",
-    "samdark/sitemap": "^2.4",
-    "twig/twig": "^3.21"
+    "php": ">=8.4",
+    "erusev/parsedown": "^1.8",
+    "robinn/cache": "^2.7",
+    "samdark/sitemap": "^2.5",
+    "twig/twig": "^3.28"
   },
   "require-dev": {
-    "phpstan/phpstan": "^2.1"
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^13.2"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -33,11 +34,17 @@
       "RobiNN\\Pmd\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "RobiNN\\Pmd\\Tests\\": "tests/"
+    }
+  },
   "config": {
     "sort-packages": true
   },
   "scripts": {
     "phpstan": "phpstan --ansi",
+    "test": "phpunit --colors=always",
     "sitemap": "php bin/sitemap"
   }
 }
